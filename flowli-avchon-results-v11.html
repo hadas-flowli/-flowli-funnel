@@ -450,17 +450,12 @@ body {
   <div class="section-title">תוכנית פעולה מלאה</div>
   <div class="plan-section" style="min-height:460px;">
 
-    <!-- המלצה #2 - גלויה -->
-    <div class="locked-card" style="opacity:1;filter:none;margin-bottom:9px;background:linear-gradient(145deg,#FEF5E7 0%,#F9EDDE 100%);border:1px solid rgba(255,255,255,.92);border-radius:14px;padding:14px 18px;box-shadow:0 2px 16px rgba(180,110,60,.08);">
-      <div class="locked-num">2</div>
-      <div><div class="locked-title">מערכת פולואפ אוטומטית</div><div class="locked-desc">פניות שלא ענו מקבלות תזכורת חכמה - ללא מאמץ ידני</div></div>
+    <!-- המלצה #2 - גלויה, ממולאת ב-JS -->
+    <div id="planCard2" style="opacity:1;filter:none;margin-bottom:9px;background:linear-gradient(145deg,#FEF5E7 0%,#F9EDDE 100%);border:1px solid rgba(255,255,255,.92);border-radius:14px;padding:14px 18px;box-shadow:0 2px 16px rgba(180,110,60,.08);display:flex;gap:14px;align-items:flex-start;">
     </div>
 
-    <!-- המלצות 3-5 - מטושטשות -->
-    <div class="locked-cards" style="padding-bottom:12px;">
-      <div class="locked-card"><div class="locked-num">3</div><div><div class="locked-title">CRM מרכזי לכל הלקוחות</div><div class="locked-desc">היסטוריה, סטטוס, ביאורים - במקום אחד</div></div></div>
-      <div class="locked-card"><div class="locked-num">4</div><div><div class="locked-title">דשבורד ניהול פניות</div><div class="locked-desc">תרא.י בזמן אמת מה קורה בעסק שלך</div></div></div>
-      <div class="locked-card"><div class="locked-num">5</div><div><div class="locked-title">אוטומציית הצעות מחיר</div><div class="locked-desc">PDF מוכן תוך 3 דקות, ישירות ללקוח</div></div></div>
+    <!-- המלצות 3-5 - מטושטשות, ממולאות ב-JS -->
+    <div class="locked-cards" style="padding-bottom:12px;" id="planCards35">
     </div>
 
     <div class="cta-overlay">
@@ -714,6 +709,46 @@ function renderDemoCard(type){
   el.innerHTML=templates[type]||templates.crm;
 }
 renderDemoCard(rec.type);
+renderDemoCard(rec.type);
+
+// ── בניית תוכנית פעולה דינמית ─────────────────────────────────
+// כל האוטומציות האפשריות עם התנאי שלהן
+const NA = 4;
+const allRecs = [
+  // type, title, desc, condition (true = רלוונטי)
+  { type:'whatsapp', title:'בוט WhatsApp אוטומטי',        desc:'עונה תוך שניות, מאשר קבלת פנייה ומסנן לידים',      on: answers.responseTime!==NA },
+  { type:'crm',      title:'מעקב פניות אוטומטי',          desc:'רשימת פניות חיה עם תזכורות — אף לקוח לא נשכח',    on: answers.followup!==NA && answers.leads!==NA },
+  { type:'quotes',   title:'הצעות מחיר אוטומטיות',        desc:'תבנית חכמה — PDF מוכן תוך 3 דקות, ישירות ללקוח',  on: answers.quotes!==NA && answers.quotes!==4 },
+  { type:'faq',      title:'בוט FAQ ומידע ללקוחות',       desc:'עונה על שאלות חוזרות, שולח מחירים ומידע אוטומטית', on: answers.questions!==NA && answers.questions!==4 },
+  { type:'crm2',     title:'CRM מרכזי לכל הלקוחות',       desc:'היסטוריה, סטטוס, ביאורים — הכל במקום אחד',         on: answers.info!==NA },
+  { type:'dashboard',title:'דשבורד ניהול בזמן אמת',       desc:'תראי מה קורה בעסק — פניות, עסקאות, סטטוסים',       on: true },
+];
+
+// מיין לפי רלוונטיות: קודם כל מה שעניתי עליו, אחר כך השאר
+// הסר את ההמלצה הראשונה (rec.type) כי היא כבר בכרטיס #1
+const recType = rec.type;
+const ordered = [
+  ...allRecs.filter(r => r.on && r.type !== recType),
+  ...allRecs.filter(r => !r.on && r.type !== recType),
+];
+
+// כרטיס #2 — גלוי
+const card2 = ordered[0] || { title:'מעקב פניות אוטומטי', desc:'פניות שלא ענו מקבלות תזכורת חכמה' };
+const el2 = document.getElementById('planCard2');
+if(el2) el2.innerHTML = `
+  <div class="locked-num">2</div>
+  <div><div class="locked-title">${card2.title}</div><div class="locked-desc">${card2.desc}</div></div>`;
+
+// כרטיסים #3–5 — מטושטשים
+const el35 = document.getElementById('planCards35');
+if(el35) {
+  el35.innerHTML = ordered.slice(1,4).map((r,i) => `
+    <div class="locked-card">
+      <div class="locked-num">${i+3}</div>
+      <div><div class="locked-title">${r.title}</div><div class="locked-desc">${r.desc}</div></div>
+    </div>`).join('');
+}
+
 
 // RENDER
 document.getElementById('heroName').textContent=firstName+', האבחון שלך מוכן 🎉';
