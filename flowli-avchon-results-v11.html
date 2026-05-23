@@ -486,24 +486,23 @@ const improvedClose=Math.min(closeRates*1.35,0.85);
 const leadsLost=Math.round(leadsPerMonth*(1-closeRates));
 const moneyLost=Math.round(leadsLost*dealValues*improvedClose);
 
-// ערך 4 = "לא רלוונטי" — מסונן מחישוב
-function score(keys){const v=keys.map(k=>answers[k]).filter(x=>x!==undefined&&typeof x==='number'&&x!==4);return v.length?Math.round(100-(v.reduce((a,b)=>a+b,0)/v.length/3)*100):null;}
+function score(keys){const v=keys.map(k=>answers[k]).filter(x=>x!==undefined&&typeof x==='number');return v.length?Math.round(100-(v.reduce((a,b)=>a+b,0)/v.length/3)*100):50;}
 
 const areas=[
   {name:'ניהול לידים', score:score(['leads','followup'])},
   {name:'זמן תגובה',   score:score(['responseTime'])},
   {name:'תפעול משרד',  score:score(['quotes','info','questions'])},
   {name:'עומס יומי',   score:score(['mood'])},
-].filter(a=>a.score!==null);
-const totalScore=areas.length?Math.round(areas.reduce((a,b)=>a+b.score,0)/areas.length):50;
-const worstArea=[...areas].sort((a,b)=>a.score-b.score)[0]||{name:'כללי',score:50};
+];
+const totalScore=Math.round(areas.reduce((a,b)=>a+b.score,0)/areas.length);
+const worstArea=[...areas].sort((a,b)=>a.score-b.score)[0];
 
 const autos=[
   {name:'בוט וואטסאפ',impact:3,effort:1,on:answers.responseTime>=1||answers.leads>=1},
   {name:'פולואפ אוטו', impact:3,effort:1,on:answers.followup>=1},
-  {name:'הצעות מחיר', impact:2,effort:1,on:answers.quotes>=1&&answers.quotes!==4},
-  {name:'CRM מרכזי',  impact:2,effort:2,on:answers.info>=1&&answers.info!==4},
-  {name:'FAQ Bot',     impact:2,effort:1,on:answers.questions>=1&&answers.questions!==4},
+  {name:'הצעות מחיר', impact:2,effort:1,on:answers.quotes>=1},
+  {name:'CRM מרכזי',  impact:2,effort:2,on:answers.info>=1},
+  {name:'FAQ Bot',     impact:2,effort:1,on:answers.questions>=1},
   {name:'דשבורד',     impact:1,effort:2,on:true},
   {name:'אינטגרציות', impact:2,effort:3,on:(answers.leadSources||[]).length>=3},
 ];
@@ -547,7 +546,7 @@ function buildRec(){
     if(highDeal) return{tool:'📋 מערכת מעקב לידים',body:`${painHtml}הכלי שמתאים לך: <em>CRM קל ואוטומטי</em> שרושם כל פנייה ושולח תזכורת כשליד לא קיבל מענה תוך 24 שעות.`,impact:`שחזור עד ${moneyLost.toLocaleString()}₪ בחודש`};
     return{tool:'📋 מעקב פניות אוטומטי',body:`${painHtml}הכלי שמתאים לך: <em>רשימת לידים חיה</em> שמתעדכנת אוטומטית ושולחת תזכורת כשפנייה נשכחת.`,impact:`שחזור ${moneyLost.toLocaleString()}₪ בחודש`};
   }
-  if((worstArea.name.includes('תפעול')||answers.quotes>=2)&&answers.quotes!==4)
+  if(worstArea.name.includes('תפעול')||answers.quotes>=2)
     return{tool:'📄 הצעות מחיר אוטומטיות',body:`${painHtml}הכלי שמתאים לך: <em>תבנית הצעת מחיר חכמה</em> — מזין שם לקוח, מקבל PDF מוכן תוך 3 דקות. הלקוח מקבל לפני שסיים לחפש מתחרים.`,impact:'חוסך 5–8 שעות שבועיות'};
   return{tool:'⚡ חבילת אוטומציה בסיסית',body:`${painHtml}הכלי שמתאים לך: <em>3 אוטומציות ליבה</em> — תגובה ראשונה, מעקב לידים, ועדכון סטטוס ללקוחות.`,impact:'8–10 שעות פנויות בשבוע'};
 }

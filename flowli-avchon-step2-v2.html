@@ -522,21 +522,6 @@ function nextBlock() {
       localStorage.setItem('flowliAnswers', JSON.stringify(answers));
       localStorage.setItem('flowli_abandoned_step', '3');
     } catch(e) {}
-    // שמור ב-Supabase ברקע
-    try {
-      var _s='https://whuuevjoqitwslnykvgd.supabase.co';
-      var _k='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndodXVldmpvcWl0d3NsbnlrdmdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMTk3NDQsImV4cCI6MjA5NDY5NTc0NH0.r_lxvPFY275H7ODxYGHs0-NvqfQd8_e3fKHYy4sgq34';
-      var _lead=JSON.parse(localStorage.getItem('flowli_lead')||'{}');
-      if(_lead.email){
-        function _sc(keys){var v=keys.map(function(k){return answers[k];}).filter(function(x){return x!==undefined&&typeof x==='number'&&x!==4;});return v.length?Math.round(100-(v.reduce(function(a,b){return a+b;},0)/v.length/3)*100):null;}
-        var _a=[{n:'ניהול לידים',s:_sc(['leads','followup'])},{n:'זמן תגובה',s:_sc(['responseTime'])},{n:'תפעול משרד',s:_sc(['quotes','info','questions'])},{n:'עומס יומי',s:_sc(['mood'])}].filter(function(a){return a.s!==null;});
-        var _tot=_a.length?Math.round(_a.reduce(function(a,b){return a+b.s;},0)/_a.length):50;
-        var _w=_a.slice().sort(function(a,b){return a.s-b.s;})[0];
-        var _lpm=[7,20,50,100][answers.monthlyLeads||0],_cr=[0.75,0.50,0.25,0.12][answers.closeRate||0],_dv=[250,1200,5500,15000][answers.dealsize||0];
-        var _roi=Math.round(Math.round(_lpm*(1-_cr))*_dv*Math.min(_cr*1.35,0.85));
-        fetch(_s+'/rest/v1/leads?email=eq.'+encodeURIComponent(_lead.email),{method:'PATCH',headers:{'Content-Type':'application/json','apikey':_k,'Authorization':'Bearer '+_k,'Prefer':'return=minimal'},body:JSON.stringify({answers:answers,score:_tot,worst_area:_w?_w.n:'כללי',roi_estimate:_roi})}).catch(function(){});
-      }
-    } catch(e){}
     window.location.href = 'flowli-avchon-loading.html';
   }
 }
