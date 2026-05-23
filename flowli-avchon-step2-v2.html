@@ -562,15 +562,24 @@ function nextBlock() {
           if (scores[k] !== null && scores[k] > worstVal) { worstVal = scores[k]; worstArea = k; }
         });
 
-        var roiMap = { '0':'עד 5K', '1':'5K-15K', '2':'15K-40K', '3':'40K+', '4':'לא ידוע' };
-        var roiEst = roiMap[String(ans['dealsize'])] || 'לא ידוע';
+        // חשב roi_estimate כמספר (כמו דף התוצאות)
+        var leadsArr = [7, 20, 50, 100];
+        var closeArr = [0.75, 0.50, 0.25, 0.12];
+        var dealArr  = [250, 1200, 5500, 15000];
+        var ml = ans['monthlyLeads'] !== undefined ? ans['monthlyLeads'] : 1;
+        var cr = ans['closeRate']    !== undefined ? ans['closeRate']    : 2;
+        var ds = ans['dealsize']     !== undefined ? ans['dealsize']     : 1;
+        var roiEst = Math.round(
+          (leadsArr[Math.min(ml,3)] || 20) *
+          (closeArr[Math.min(cr,3)] || 0.25) *
+          (dealArr[Math.min(ds,3)]  || 1200) * 0.3
+        );
 
         var payload = {
-          email: lead.email,
           score: totalScore,
           worst_area: areaMap[worstArea] || worstArea,
           roi_estimate: roiEst,
-          answers: JSON.stringify(ans)
+          answers: ans
         };
 
         fetch(SURL + '/rest/v1/leads?email=eq.' + encodeURIComponent(lead.email), {
