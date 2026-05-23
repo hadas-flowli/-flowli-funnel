@@ -746,6 +746,35 @@ document.getElementById('recoTool1ex').textContent=rec.tool;
 document.getElementById('recoBody1ex').innerHTML=rec.body;
 document.getElementById('recoImpact1ex').textContent=rec.impact;
 
+// ── openContact ────────────────────────────────────────────────
+function openContact(){
+  var btn=document.getElementById('btnContact');
+  window.open('mailto:hadas@flowli.co.il?subject=קביעת שיחת אסטרטגיה Flowli&body=שלום הדס, אשמח לקבוע שיחה.','_blank');
+  if(btn){
+    btn.classList.add('booked');
+    btn.style.flexDirection='row';
+    btn.style.gap='8px';
+    btn.innerHTML='👍 קיבלתי - אחזור אליך בהקדם!';
+    btn.onclick=null;
+  }
+  // Update Supabase
+  (function(){
+    var SURL='https://whuuevjoqitwslnykvgd.supabase.co';
+    var SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndodXVldmpvcWl0d3NsbnlrdmdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMTk3NDQsImV4cCI6MjA5NDY5NTc0NH0.r_lxvPFY275H7ODxYGHs0-NvqfQd8_e3fKHYy4sgq34';
+    try{
+      var email='';
+      try{ email=(JSON.parse(localStorage.getItem('flowli_lead')||'{}')).email||''; }catch(e){}
+      if(!email) email=localStorage.getItem('flowliEmail')||'';
+      if(!email) return;
+      fetch(SURL+'/rest/v1/leads?email=eq.'+encodeURIComponent(email),{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json','apikey':SKEY,'Authorization':'Bearer '+SKEY,'Prefer':'return=minimal'},
+        body:JSON.stringify({callback_requested:true})
+      }).catch(function(){});
+    }catch(e){}
+  })();
+}
+
 </script>
 </body>
 </html>
