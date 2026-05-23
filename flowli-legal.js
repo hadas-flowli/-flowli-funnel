@@ -18,7 +18,7 @@
       z-index: 9000;
       width: 48px; height: 48px;
       border-radius: 50%;
-      background: #7A5C38;
+      background: #B8966A;
       border: none;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
