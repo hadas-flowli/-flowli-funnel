@@ -514,7 +514,7 @@ autos.filter(a=>a.on).forEach(a=>{
   qMap[q].push(a.name);
 });
 
-// ה-insight מבוסס על ההמלצה הראשית (rec.type) ולא על worstArea
+// ה-insight ו-buildRec מבוססים על rec.type
 const priByType={
   whatsapp:{
     title:firstName+', הלקוח לא ממתין — הוא כבר אצל המתחרה',
@@ -542,63 +542,53 @@ const priByType={
     step:`שלב 1: לזהות את 3 המשימות החוזרות ביותר ולהפוך אותן לאוטומטיות`
   },
 };
-const pri=priByType[rec.type]||priByType.bundle;
 
 function buildRec(){
   const pain=(answers.painPoint||'').trim();
   const painHtml=pain.length>10?`כתבת: <em>"${pain.length>60?pain.slice(0,58)+'...':pain}"</em> — זה בדיוק הנקודה. `:'';
   const highDeal=(answers.dealsize||0)>=2;
   const NA=4;
-
-  // ציוני חומרה רק לשאלות שנענו (לא NA)
   const rt  = answers.responseTime!==NA ? (answers.responseTime??0) : -1;
   const fu  = answers.followup!==NA     ? (answers.followup??0)     : -1;
   const qu  = answers.quotes!==NA       ? (answers.quotes??0)       : -1;
   const inf = answers.info!==NA         ? (answers.info??0)         : -1;
   const qst = answers.questions!==NA    ? (answers.questions??0)    : -1;
-  const mo  = answers.mood??0;
-  const ld  = answers.leads??0;
 
-  // מצא את הבעיה הכי חמורה מבין מה שנענה
-  const scored = [
-    { type:'whatsapp', score: rt,  min:2 },
-    { type:'crm',      score: fu,  min:2 },
-    { type:'quotes',   score: qu,  min:2 },
-    { type:'faq',      score: qst, min:2 },
-    { type:'info',     score: inf, min:2 },
-  ].filter(x => x.score >= x.min).sort((a,b) => b.score - a.score);
+  const scored=[
+    {type:'whatsapp',score:rt},
+    {type:'crm',     score:fu},
+    {type:'quotes',  score:qu},
+    {type:'faq',     score:Math.max(qst,inf)},
+  ].filter(x=>x.score>=2).sort((a,b)=>b.score-a.score);
 
-  const worst = scored[0]?.type || 'bundle';
+  const worst=scored[0]?.type||'bundle';
 
-  if(worst==='whatsapp')
-    return{type:'whatsapp',
-      tool:'🤖 בוט WhatsApp אוטומטי',
-      body:`${painHtml}הכלי שמתאים לך: <em>בוט WhatsApp שעונה תוך שניות</em> — מאשר קבלת פנייה, אוסף פרטים, ומעביר לך רק פניות מסוננות.`,
-      impact:`מונע ~${Math.round(moneyLost*0.35).toLocaleString()}₪ אובדן חודשי`};
+  if(worst==='whatsapp') return{type:'whatsapp',
+    tool:'🤖 בוט WhatsApp אוטומטי',
+    body:`${painHtml}הכלי שמתאים לך: <em>בוט WhatsApp שעונה תוך שניות</em> — מאשר קבלת פנייה, אוסף פרטים, ומעביר לך רק פניות מסוננות.`,
+    impact:`מונע ~${Math.round(moneyLost*0.35).toLocaleString()}₪ אובדן חודשי`};
 
-  if(worst==='crm')
-    return{type:'crm',
-      tool: highDeal?'📋 CRM אוטומטי עם תזכורות':'📋 מעקב פניות אוטומטי',
-      body:`${painHtml}הכלי שמתאים לך: <em>${highDeal?'CRM קל':'רשימת פניות חיה'}</em> שרושם כל פנייה ושולח תזכורת כשלקוח לא קיבל מענה תוך 24 שעות.`,
-      impact:`שחזור עד ${moneyLost.toLocaleString()}₪ בחודש`};
+  if(worst==='crm') return{type:'crm',
+    tool:highDeal?'📋 CRM אוטומטי עם תזכורות':'📋 מעקב פניות אוטומטי',
+    body:`${painHtml}הכלי שמתאים לך: <em>${highDeal?'CRM קל':'רשימת פניות חיה'}</em> שרושם כל פנייה ושולח תזכורת כשלקוח לא קיבל מענה תוך 24 שעות.`,
+    impact:`שחזור עד ${moneyLost.toLocaleString()}₪ בחודש`};
 
-  if(worst==='quotes')
-    return{type:'quotes',
-      tool:'📄 הצעות מחיר אוטומטיות',
-      body:`${painHtml}הכלי שמתאים לך: <em>תבנית הצעת מחיר חכמה</em> — מזין שם לקוח, מקבל PDF מוכן תוך 3 דקות. הלקוח מקבל לפני שסיים לחפש מתחרים.`,
-      impact:'חוסך 5–8 שעות שבועיות'};
+  if(worst==='quotes') return{type:'quotes',
+    tool:'📄 הצעות מחיר אוטומטיות',
+    body:`${painHtml}הכלי שמתאים לך: <em>תבנית הצעת מחיר חכמה</em> — מזין שם לקוח, מקבל PDF מוכן תוך 3 דקות. הלקוח מקבל לפני שסיים לחפש מתחרים.`,
+    impact:'חוסך 5–8 שעות שבועיות'};
 
-  if(worst==='faq'||worst==='info')
-    return{type:'faq',
-      tool:'💬 בוט FAQ ומידע ללקוחות',
-      body:`${painHtml}הכלי שמתאים לך: <em>בוט תשובות אוטומטי</em> — עונה על שאלות חוזרות, שולח קישורים ומחירים, ומשחרר אותך מחזרות מיותרות.`,
-      impact:'3–5 שעות פנויות ביום'};
+  if(worst==='faq') return{type:'faq',
+    tool:'💬 בוט FAQ ומידע ללקוחות',
+    body:`${painHtml}הכלי שמתאים לך: <em>בוט תשובות אוטומטי</em> — עונה על שאלות חוזרות, שולח קישורים ומחירים, ומשחרר אותך מחזרות מיותרות.`,
+    impact:'3–5 שעות פנויות ביום'};
 
   return{type:'bundle',
     tool:'⚡ חבילת אוטומציה בסיסית',
     body:`${painHtml}הכלי שמתאים לך: <em>3 אוטומציות ליבה</em> — תגובה ראשונה, מעקב פניות, ועדכון סטטוס ללקוחות.`,
     impact:'8–10 שעות פנויות בשבוע'};
 }
+
 const rec=buildRec();
 
 // render demo card based on rec type
