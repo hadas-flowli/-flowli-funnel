@@ -312,9 +312,11 @@ body {
 .cta-body  { font-size: 14px; color: #555; line-height: 1.65; margin-bottom: 10px; }
 .cta-scarcity {
   display: inline-block; margin-bottom: 18px;
-  background: rgba(242,107,31,.08); border: 1px solid rgba(242,107,31,.2);
-  border-radius: 10px; padding: 7px 14px;
-  font-size: 13px; font-weight: 600; color: var(--orange-deep); line-height: 1.5;
+  background: linear-gradient(135deg, rgba(255,248,235,.9), rgba(251,220,180,.7));
+  border: 1px solid rgba(242,107,31,.25);
+  border-radius: 10px; padding: 9px 16px;
+  font-size: 13px; font-weight: 600; color: var(--orange-deep); line-height: 1.6;
+  box-shadow: 0 1px 0 rgba(255,255,255,.8) inset;
 }
 .btn-cta {
   display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
@@ -505,8 +507,9 @@ body {
         <div class="cta-title">רוצ.ה את תוכנית הפעולה המלאה?</div>
         <div class="cta-body">בשיחה של 30 דקות - נבנה יחד את המפה המדויקת לעסק שלך.</div>
         <div class="cta-scarcity">💛 אני עובדת עם מספר מצומצם של עסקים בכל חודש -<br>כדי שאוכל להיות נוכחת באמת.</div>
-        <button class="btn-cta" id="btnContact" onclick="openContact()">
-          📞 אשמח לשיחת היכרות קצרה — צרי קשר!
+        <button class="btn-cta" id="btnContact" onclick="openContact()" style="flex-direction:column;gap:3px;line-height:1.3;">
+          <span>📞 אשמח לשיחת היכרות קצרה —</span>
+          <span>צרי קשר!</span>
         </button>
       </div>
     </div>
