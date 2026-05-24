@@ -557,85 +557,123 @@ autos.filter(a=>a.on).forEach(a=>{
   qMap[q].push(a.name);
 });
 
-// ה-insight ו-buildRec מבוססים על rec.type — דינמי לפי נתוני השאלון
+// ה-insight לפי סוג המלצה + ענף
 const rtLabels=['תוך 5 דקות','תוך שעה-שעתיים','אותו יום','יום או יותר'];
 const rtLabel=answers.responseTime>=0&&answers.responseTime<=3?rtLabels[answers.responseTime]:'זמן ארוך';
 const leadsMonthly=[7,20,50,100][answers.monthlyLeads??1];
+const industryLabels=['שירותים','מסחר ומוצרים','B2B','אירועים'];
+const industryLabel=industryLabels[answers.industry??0];
 
 const priByType={
   whatsapp:{
     title:`${firstName}, פנייה שלא ענית עליה ${rtLabel} — כבר אצל המתחרה`,
-    body:`כשעוברות יותר מ-2 שעות עד לתגובה הראשונה — <em>שיעור הסגירה יורד ב-70%</em>. עם ${leadsMonthly} פניות בחודש, זה כסף שנשאר על השולחן.`,
+    body:`ב${industryLabel}, לקוח שלא מקבל מענה תוך שעה — עובר הלאה. <em>שיעור הסגירה יורד ב-70%</em> עם כל שעה שעוברת. עם ${leadsMonthly} פניות בחודש, זה מספרים גדולים.`,
     step:`שלב 1: תגובה אוטומטית שמאשרת קבלת פנייה תוך 30 שניות`
   },
   crm:{
-    title:`${leadsLost} פניות יוצאות מהמשפך שלך כל חודש`,
-    body:`לא בגלל שהן לא מתאימות — אלא כי <em>אין מעקב מסודר</em>. כל פנייה שנופלת שווה ${dealValues.toLocaleString()}₪ שנשאר על השולחן.`,
+    title:`${leadsLost} פניות יוצאות מהמשפך שלך כל חודש — בלי מעקב`,
+    body:`ב${industryLabel} הלקוח מצפה לחזרה. בלי מעקב מסודר — <em>כל פנייה שנשכחת שווה ${dealValues.toLocaleString()}₪</em> שנשאר על השולחן.`,
     step:`שלב 1: רשימה חיה של כל הפניות הפתוחות עם סטטוס ותאריך`
   },
   quotes:{
     title:`הצעת מחיר שמאחרת = עסקת ${dealValues.toLocaleString()}₪ אצל המתחרה`,
-    body:`כל עיכוב בהצעה הוא הזדמנות למתחרה. <em>3 דקות במקום שעות</em> — זה אפשרי עם תבנית שמייצרת הצעות מחיר אוטומטיות.`,
+    body:`ב${industryLabel}, מי שמחזיר הצעה ראשון — סוגר. <em>3 דקות במקום שעות</em> זה לא חלום, זה אוטומציה פשוטה.`,
     step:`שלב 1: תבנית הצעת מחיר שמתמלאת אוטומטית בנתוני הלקוח`
   },
   faq:{
-    title:'חצי יום עונה על אותן שאלות שוב ושוב',
+    title:`חצי יום עונה על אותן שאלות — ב${industryLabel} זה נפוץ, אבל לא חייב`,
     body:`שאלות על מחיר, זמינות, סטטוס — <em>80% מהשאלות חוזרות</em>. בוט שעונה אוטומטית משחרר אותך לעבוד על מה שחשוב.`,
     step:`שלב 1: רשימת השאלות הנפוצות ותשובות אוטומטיות`
   },
   bundle:{
     title:`${firstName}, כל האנרגיה שלך הולכת לכיבוי שריפות`,
-    body:`עם ${leadsMonthly} פניות בחודש ועסקאות של ${dealValues.toLocaleString()}₪ — <em>כל דקה שהולכת לשגרה ידנית</em> היא דקה שלא הולכת לצמיחה.`,
+    body:`עם ${leadsMonthly} פניות בחודש ועסקאות של ${dealValues.toLocaleString()}₪ ב${industryLabel} — <em>כל דקה שהולכת לשגרה ידנית</em> היא דקה שלא הולכת לצמיחה.`,
     step:`שלב 1: לזהות את 3 המשימות החוזרות ביותר ולהפוך אותן לאוטומטיות`
   },
 };
 
 function buildRec(){
   const pain=(answers.painPoint||'').trim();
-  const painHtml=pain.length>10?`כתבת: <em>"${pain.length>60?pain.slice(0,58)+'...':pain}"</em> — זה בדיוק הנקודה. `:'';
   const highDeal=(answers.dealsize||0)>=2;
   const NA=4;
 
-  // זיהוי painPoint אוטומטי לפי מילות מפתח מהטקסט החופשי
+  // ─── 1. ציוני שאלון ───────────────────────────────
+  // כל מדד: -1 = לא רלוונטי/לא נענה, 0-3 = חומרה עולה
+  const val=(key,naVal=NA)=>{
+    const v=answers[key];
+    return(v!==undefined && v!==naVal)?v:-1;
+  };
+  const rt=val('responseTime'); // זמן תגובה
+  const ld=val('leads');        // ניהול פניות (אין NA → naVal=99)
+  const fu=val('followup');     // מעקב (אין NA)
+  const qu=val('quotes');       // הצעות מחיר (NA=4)
+  const inf=val('info');        // מידע לקוח (אין NA → naVal=99)
+  const qst=val('questions');   // שאלות חוזרות (NA=4)
+
+  // ─── 2. ציון מצטבר לכל המלצה ─────────────────────
+  // whatsapp: תגובה מהירה + ניהול פניות ראשוני
+  // crm: מעקב + ניהול פניות + מידע — משוקלל יותר
+  // quotes: הצעות מחיר
+  // faq: שאלות חוזרות + מידע
+
+  const scores={
+    whatsapp: rt*1.5 + (ld>=1?ld*0.5:0),
+    crm:      fu*2   + (ld>=2?ld:0)   + (inf>=2?inf*0.5:0),
+    quotes:   qu*2,
+    faq:      qst*1.5 + (inf>=1?inf:0),
+  };
+
+  // ─── 3. זיהוי painPoint מהטקסט החופשי ───────────
   const painLow=pain.toLowerCase();
   const painKeywords={
-    whatsapp:['וואטסאפ','whatsapp','הודע','תגוב','ענ','חזר','פניות','נכנס'],
-    crm:['עוקב','מעקב','ליד','נופל','שוכח','לא זוכר','היסטוריה','לקוח'],
-    quotes:['הצעת מחיר','הצעה','מחיר','PDF','אקסל','זמן','להכין','שעות'],
-    faq:['שאלות','אותן','חוזר','מחיר','מלאי','סטטוס','מידע','שוב ושוב'],
+    whatsapp:['וואטסאפ','whatsapp','הודע','לא חוזר','לא ענ','פניות נכנס','תגוב'],
+    crm:['מעקב','ליד','נופל','שוכח','לא זוכר','היסטוריה','עוקב','לקוחות נושנ'],
+    quotes:['הצעת מחיר','הצעה','pdf','אקסל','להכין','שעות על'],
+    faq:['שאלות חוזר','אותן שאלות','מחיר שוב','מלאי שוב','סטטוס שוב','שוב ושוב'],
   };
-  let painType=null;
-  for(const [type,words] of Object.entries(painKeywords)){
-    if(words.some(w=>painLow.includes(w))){ painType=type; break; }
+  // מילות מפתח שמצביעות על כאב שלא בשאלון
+  const outOfScopeWords=['פרסום','שיווק','מודעות','גוגל','פייסבוק','תמחור','תחרות','מתחרה','עובד','צוות','גיוס'];
+  const isOutOfScope=outOfScopeWords.some(w=>painLow.includes(w));
+
+  let painBonus=null;
+  if(!isOutOfScope && pain.length>5){
+    for(const [type,words] of Object.entries(painKeywords)){
+      if(words.some(w=>painLow.includes(w))){ painBonus=type; break; }
+    }
   }
 
-  const rt  = answers.responseTime!==undefined && answers.responseTime!==NA ? answers.responseTime : -1;
-  const fu  = answers.followup!==undefined     && answers.followup!==NA     ? answers.followup     : -1;
-  const qu  = answers.quotes!==undefined       && answers.quotes!==NA       ? answers.quotes       : -1;
-  const inf = answers.info!==undefined         && answers.info!==NA         ? answers.info         : -1;
-  const qst = answers.questions!==undefined    && answers.questions!==NA    ? answers.questions    : -1;
-  const lds = answers.leads!==undefined                                     ? answers.leads        : -1;
+  // בונוס לסוג שהtexxt מצביע עליו
+  if(painBonus && scores[painBonus]>=0) scores[painBonus]+=2;
 
-  // ציון לכל סוג — גבוה יותר = בעיה חמורה יותר
-  const scored=[
-    {type:'whatsapp', score: Math.max(rt, lds)},
-    {type:'crm',      score: fu},
-    {type:'quotes',   score: qu},
-    {type:'faq',      score: Math.max(qst, inf)},
-  ].filter(x=>x.score>=1).sort((a,b)=>b.score-a.score);
+  // ─── 4. בחר המלצה ────────────────────────────────
+  const best=Object.entries(scores)
+    .filter(([,s])=>s>0)
+    .sort(([,a],[,b])=>b-a)[0];
 
-  // אם painPoint מצביע על סוג ספציפי — תן לו בונוס ראשוניות
-  let worst=scored[0]?.type||'bundle';
-  if(painType && scored.find(s=>s.type===painType)) worst=painType;
+  const worst=best?best[0]:'bundle';
 
+  // ─── 5. painHtml ─────────────────────────────────
+  // כאב בשאלון → ציטוט + "זה בדיוק הנקודה"
+  // כאב מחוץ לשאלון → ציטוט + "נדבר גם על זה בשיחה"
+  let painHtml='';
+  if(pain.length>8){
+    const quote=`<em>"${pain.length>60?pain.slice(0,58)+'...':pain}"</em>`;
+    if(isOutOfScope){
+      painHtml=`כתבת: ${quote} — זה נושא שנדבר עליו בשיחה. `;
+    } else {
+      painHtml=`כתבת: ${quote} — זה בדיוק הנקודה. `;
+    }
+  }
+
+  // ─── 6. החזר לפי סוג ────────────────────────────
   if(worst==='whatsapp') return{type:'whatsapp',
     tool:'🤖 בוט WhatsApp אוטומטי',
-    body:`${painHtml}הכלי שמתאים לך: <em>בוט WhatsApp שעונה תוך שניות</em> — מאשר קבלת פנייה, אוסף פרטים, ומעביר לך רק פניות מסוננות.`,
+    body:`${painHtml}הכלי שמתאים לך: <em>בוט שעונה תוך שניות</em> — מאשר קבלת פנייה, אוסף פרטים, ומעביר לך רק פניות מסוננות.`,
     impact:`מונע ~${Math.round(moneyLost*0.35).toLocaleString()}₪ אובדן חודשי`};
 
   if(worst==='crm') return{type:'crm',
     tool:highDeal?'📋 CRM אוטומטי עם תזכורות':'📋 מעקב פניות אוטומטי',
-    body:`${painHtml}הכלי שמתאים לך: <em>${highDeal?'CRM קל':'רשימת פניות חיה'}</em> שרושם כל פנייה ושולח תזכורת כשלקוח לא קיבל מענה תוך 24 שעות.`,
+    body:`${painHtml}הכלי שמתאים לך: <em>${highDeal?'CRM קל עם תזכורות אוטומטיות':'רשימת פניות חיה'}</em> — כל לקוח מקבל מעקב, אף פנייה לא נופלת.`,
     impact:`שחזור עד ${moneyLost.toLocaleString()}₪ בחודש`};
 
   if(worst==='quotes') return{type:'quotes',
@@ -648,9 +686,10 @@ function buildRec(){
     body:`${painHtml}הכלי שמתאים לך: <em>בוט תשובות אוטומטי</em> — עונה על שאלות חוזרות, שולח קישורים ומחירים, ומשחרר אותך מחזרות מיותרות.`,
     impact:'3–5 שעות פנויות ביום'};
 
+  // bundle — last resort, תמיד כולל את הכאב
   return{type:'bundle',
-    tool:'⚡ חבילת אוטומציה בסיסית',
-    body:`${painHtml}הכלי שמתאים לך: <em>3 אוטומציות ליבה</em> — תגובה ראשונה, מעקב פניות, ועדכון סטטוס ללקוחות.`,
+    tool:'⚡ חבילת אוטומציה מותאמת אישית',
+    body:`${painHtml}הכלי שמתאים לך: <em>3 אוטומציות ליבה</em> — תגובה ראשונה, מעקב פניות, ועדכון סטטוס. ומה שכתבת — <em>נדבר עליו בשיחה</em>.`,
     impact:'8–10 שעות פנויות בשבוע'};
 }
 
