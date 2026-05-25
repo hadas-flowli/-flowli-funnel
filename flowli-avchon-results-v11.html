@@ -616,18 +616,27 @@ function buildRec(){
   // quotes: הצעות מחיר
   // faq: שאלות חוזרות + מידע
 
+  // ─── leadSources: האם משתמשים בוואטסאפ? ───────────
+  const ls=answers.leadSources||[];
+  const usesWA=ls.includes(0)||ls.includes('0');
+
   const scores={
-    whatsapp: rt*1.5 + (ld>=1?ld*0.5:0),
-    crm:      fu*2   + (ld>=2?ld:0)   + (inf>=2?inf*0.5:0),
-    quotes:   qu*2,
-    faq:      qst*1.5 + (inf>=1?inf:0),
+    // WA: רלוונטי רק אם הערוץ קיים. rt חשוב, ld בונוס קטן
+    whatsapp: usesWA ? rt*1.5 + (ld>=1?ld*0.3:0) : 0,
+    // CRM: מספיק fu גבוה כדי לנצח — ld כבונוס קטן, לא תנאי
+    crm:      fu*2 + (ld>=1?ld*0.4:0) + (inf>=1?inf*0.4:0),
+    quotes:   qu>=0&&qu<4 ? qu*2 : 0,
+    faq:      qst>=0&&qst<4 ? qst*1.5 + (inf>=1?inf*0.5:0) : 0,
   };
 
   // ─── 3. זיהוי painPoint מהטקסט החופשי ───────────
   const painLow=pain.toLowerCase();
   const painKeywords={
-    whatsapp:['וואטסאפ','whatsapp','הודע','לא חוזר','לא ענ','פניות נכנס','תגוב'],
-    crm:['מעקב','ליד','נופל','שוכח','לא זוכר','היסטוריה','עוקב','לקוחות נושנ'],
+    whatsapp:['וואטסאפ','whatsapp','הודע','לא חוזר','לא ענ','פניות נכנס','תגוב','מסרים','צ׳אט'],
+    crm:['מעקב','ליד','נופל','שוכח','לא זוכר','היסטוריה','עוקב','לקוחות נושנ',
+         'בלאגן','אין סדר','אין מרכז','מפוזר','מפוזרים','לא מסודר','מבולגן',
+         'לא יודע איפה','לאן הלך','אבד','נאבד','לא עוקב','פספס','פיספוס',
+         'ניהול','לא מנוהל','הכל בראש','ספרדשיט','גיליון','אקסל ישן'],
     quotes:['הצעת מחיר','הצעה','pdf','אקסל','להכין','שעות על'],
     faq:['שאלות חוזר','אותן שאלות','מחיר שוב','מלאי שוב','סטטוס שוב','שוב ושוב'],
   };
@@ -646,11 +655,15 @@ function buildRec(){
   if(painBonus && scores[painBonus]>=0) scores[painBonus]+=2;
 
   // ─── 4. בחר המלצה ────────────────────────────────
-  const best=Object.entries(scores)
+  // bundle: אם יש 2+ ציונים גבוהים (≥3) — מציעים חבילה
+  const highScores=Object.entries(scores).filter(([,s])=>s>=3);
+  const sortedScores=Object.entries(scores)
     .filter(([,s])=>s>0)
-    .sort(([,a],[,b])=>b-a)[0];
+    .sort(([,a],[,b])=>b-a);
+  const best=sortedScores[0];
+  const isBundle=highScores.length>=2 && (best?best[1]>=3:false);
 
-  const worst=best?best[0]:'bundle';
+  const worst=isBundle?'bundle':(best?best[0]:'bundle');
 
   // ─── 5. painHtml ─────────────────────────────────
   // כאב בשאלון → ציטוט + "זה בדיוק הנקודה"
@@ -671,10 +684,16 @@ function buildRec(){
     body:`${painHtml}הכלי שמתאים לך: <em>בוט שעונה תוך שניות</em> — מאשר קבלת פנייה, אוסף פרטים, ומעביר לך רק פניות מסוננות.`,
     impact:`מונע ~${Math.round(moneyLost*0.35).toLocaleString()}₪ אובדן חודשי`};
 
-  if(worst==='crm') return{type:'crm',
-    tool:highDeal?'📋 CRM אוטומטי עם תזכורות':'📋 מעקב פניות אוטומטי',
-    body:`${painHtml}הכלי שמתאים לך: <em>${highDeal?'CRM קל עם תזכורות אוטומטיות':'רשימת פניות חיה'}</em> — כל לקוח מקבל מעקב, אף פנייה לא נופלת.`,
-    impact:`שחזור עד ${moneyLost.toLocaleString()}₪ בחודש`};
+  if(worst==='crm'){
+    const crmDisorder=['בלאגן','מפוזר','אין סדר','מבולגן','לא מסודר'].some(w=>painLow.includes(w));
+    const crmBody=crmDisorder
+      ? `${painHtml}הכלי שמתאים לך: <em>CRM מרכזי</em> — כל הפניות, הלקוחות, והסטטוסים במקום אחד. לא יותר "איפה הלך הליד הזה".`
+      : `${painHtml}הכלי שמתאים לך: <em>${highDeal?'CRM קל עם תזכורות אוטומטיות':'רשימת פניות חיה'}</em> — כל לקוח מקבל מעקב, אף פנייה לא נופלת.`;
+    return{type:'crm',
+      tool:highDeal?'📋 CRM אוטומטי עם תזכורות':'📋 מעקב פניות אוטומטי',
+      body:crmBody,
+      impact:`שחזור עד ${moneyLost.toLocaleString()}₪ בחודש`};
+  }
 
   if(worst==='quotes') return{type:'quotes',
     tool:'📄 הצעות מחיר אוטומטיות',
@@ -731,7 +750,7 @@ function renderDemoCard(type){
       </div>
       <div style="background:#ECE5DD;padding:12px 14px;display:flex;flex-direction:column;gap:8px;">
         <div style="background:#DCF8C6;border-radius:10px 0 10px 10px;padding:10px 12px;font-size:12px;max-width:82%;align-self:flex-end;text-align:right;">
-          ${painShort?`"${painShort}"`:' שלום, מתעניין.ת בשירות שלך'}
+          שלום, מתעניין.ת בשירות שלך
           <div style="font-size:10px;color:#999;margin-top:4px;">לקוח חדש · עכשיו</div>
         </div>
         <div style="background:#fff;border-radius:0 10px 10px 10px;padding:10px 12px;font-size:12px;max-width:82%;text-align:right;">
@@ -762,7 +781,7 @@ function renderDemoCard(type){
           <div style="font-weight:700;margin-bottom:6px;">הצעה מספר 042</div>
           <div>לקוח: <b>${firstName}</b></div>
           <div>ערך עסקה: <b style="color:var(--orange);">${dealLabel}</b></div>
-          ${painShort?`<div style="font-size:11px;color:#888;margin-top:4px;">הערה: "${painShort}"</div>`:''}
+          <div style="font-size:11px;color:#888;margin-top:4px;">הערה: פרטים נוספים יתואמו בשיחה</div>
           <div style="margin-top:8px;padding-top:8px;border-top:1px solid #eee;color:#888;">נוצר אוטומטית · זמן: 12 שניות ⚡</div>
         </div>
       </div>
