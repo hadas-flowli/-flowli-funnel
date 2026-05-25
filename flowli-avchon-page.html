@@ -363,7 +363,7 @@
           await fetch(`${SUPABASE_URL}/rest/v1/leads?email=eq.${encodeURIComponent(email)}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'return=minimal' },
-            body: JSON.stringify({ name, phone, visit_count: visitCount, answers: null, score: null, worst_area: null, roi_estimate: null, callback_requested: false, abandoned_at_step: null })
+            body: JSON.stringify({ name, phone, visit_count: visitCount, answers: null, score: null, worst_area: null, roi_estimate: null, tool1: null, tool2: null, sent_email: 0, completed_at: null, callback_requested: false, abandoned_at_step: null })
           });
         } else {
           // משתמש חדש — צור רשומה
@@ -379,6 +379,13 @@
       window.location.href = 'flowli-avchon-step2-v2.html';
     }
     </script>
+    <script src="flowli-legal.js"></script>
+  </body>
+</html>
+    <script src="flowli-legal.js"></script>
+  </body>
+</html>
+
     <script src="flowli-legal.js"></script>
   </body>
 </html>
