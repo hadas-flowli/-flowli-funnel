@@ -54,7 +54,7 @@
     .progress-fill { height: 100%; border-radius: 10px; background: var(--orange); transition: width 0.5s cubic-bezier(.4,0,.2,1); }
 
     /* ── BLOCK HEADER ── */
-    .block-header { margin-bottom: 24px; }
+    .block-header { margin-bottom: 24px; margin-top: 8px; }
     .block-eyebrow { font-size: 12px; font-weight: 700; color: var(--orange); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 5px; }
     .block-title { font-family: 'Rubik', sans-serif; font-size: 24px; font-weight: 700; color: var(--ink); line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 6px; }
     .block-sub { font-size: 14px; color: #777; line-height: 1.55; }
@@ -335,7 +335,7 @@ const blocks = [
   {
     id: 'leads',
     eyebrow: '💜 פניות ולקוחות',
-    title: 'פניות ולקוחות',
+    title: '',
     sub: '',
     questions: [
       {
@@ -353,7 +353,7 @@ const blocks = [
       },
       {
         id: 'close_rate',
-        label: 'מתוך 10 פניות - כמה בדרך כלל הופכות ללקוח?',
+        label: 'מתוך 10 פניות — כמה בדרך כלל הופכות ללקוח?',
         type: 'single',
         required: true,
         metrics: { LEADS: [0,1,2,3] },
@@ -699,7 +699,7 @@ function worstArea(s) {
 
 // ─── TOOL MAP ─────────────────────────────────────────────────────────────────
 const toolMap = {
-  LEADS:   { tool1: 'CRM פשוט לניהול לידים',       tool2: 'אוטומציית follow-up אוטומטית' },
+  LEADS:   { tool1: 'CRM פשוט לניהול פניות',       tool2: 'אוטומציית follow-up אוטומטית' },
   OPS:     { tool1: 'תבניות לעבודה שוטפת',          tool2: 'Make.com לאוטומציית משימות חוזרות' },
   CONTROL: { tool1: 'דשבורד לקוחות אחד ומרכזי',    tool2: 'תיעוד ואחסון מידע מסודר' },
   FLOW:    { tool1: 'תהליך קבלת לקוח אוטומטי',     tool2: 'חוקי גבולות ועבודה מובנית' },

@@ -330,7 +330,11 @@ const raw = (() => {
 })();
 
 const firstName = (() => {
-  try { const u = localStorage.getItem('flowli_user'); if(u) return JSON.parse(u).name.split(' ')[0]; } catch(e){}
+  try {
+    // תומך בשני המפתחות (flowli_user + flowli_lead)
+    const u = localStorage.getItem('flowli_user') || localStorage.getItem('flowli_lead');
+    if(u) { const d = JSON.parse(u); if(d.name) return d.name.split(' ')[0]; }
+  } catch(e){}
   return raw.name ? raw.name.split(' ')[0] : '';
 })();
 
@@ -504,7 +508,7 @@ document.getElementById('recoToolBox').innerHTML = `
       <div style="font-family:'Rubik',sans-serif;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:4px;">${tool1}</div>
       <div style="font-size:13px;color:#555;line-height:1.5;">${reco.tool1Body}</div>
     </div>
-    <div style="flex-shrink:0;text-align:center;background:var(--green-pale);border:1px solid rgba(45,122,58,.25);border-radius:10px;padding:9px 13px;font-size:12px;font-weight:700;color:var(--green);max-width:140px;line-height:1.4;">${reco.impactShift || reco.tool1Impact}</div>
+    <div style="flex-shrink:0;text-align:center;background:var(--green-pale);border:1px solid rgba(45,122,58,.25);border-radius:10px;padding:9px 13px;font-size:12px;font-weight:700;color:var(--green);white-space:nowrap;line-height:1.4;">${reco.impactShift || reco.tool1Impact}</div>
   </div>
 `;
 

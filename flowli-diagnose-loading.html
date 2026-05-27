@@ -63,19 +63,21 @@
 
     /* Badge תודה */
     .thank-you-badge {
-      display: inline-flex; align-items: center; gap: 10px;
+      display: inline-flex; align-items: center; gap: 8px;
       background: linear-gradient(135deg,
         rgba(255,248,235,.98) 0%,
         rgba(254,232,200,.95) 50%,
         rgba(251,210,165,.90) 100%);
       border: 1.5px solid rgba(242,107,31,.45);
       border-radius: 100px;
-      padding: 12px 30px;
-      font-size: 19px; font-weight: 700; color: var(--orange-deep);
+      padding: 12px 24px;
+      font-size: 16px; font-weight: 700; color: var(--orange-deep);
+      white-space: nowrap;
       box-shadow:
         0 8px 24px rgba(242,107,31,.20),
         0 1px 0 rgba(255,255,255,.9) inset;
     }
+    .thank-you-badge .badge-star { color: var(--orange-deep); font-size: 18px; }
 
     .loading-headline {
       font-family: 'Assistant', system-ui, sans-serif;
@@ -322,7 +324,7 @@
     <!-- ── Section 1: ניתוח ── -->
     <section class="loading-section" id="loadingSection">
 
-      <div class="thank-you-badge">✨ &nbsp;<span id="leadName">רגע אחד</span>, תודה שמילאת את השאלון</div>
+      <div class="thank-you-badge"><span class="badge-star">✨</span><span id="leadName">רגע אחד</span> — תודה שמילאת את השאלון</div>
 
       <div>
         <h1 class="loading-headline">
