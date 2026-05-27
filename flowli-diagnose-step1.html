@@ -497,7 +497,11 @@ const blocks = [
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let currentBlock = 0;
+// תמיד מתחילים עם answers ריק — לא טוענים מ-localStorage
+// (כל פתיחה של השאלון = סבב חדש)
 const answers = {};
+// נקה נתונים ישנים כדי שה-results לא יציג תשובות מסבב קודם
+try { localStorage.removeItem('flowli_diagnose'); } catch(e) {}
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 function render() {
@@ -514,11 +518,10 @@ function render() {
   const isLast = currentBlock === blocks.length - 1;
   document.getElementById('btnNextLabel').textContent = isLast ? 'לאבחון שלי' : 'המשך';
 
-  // build HTML
+  // build HTML — eyebrow כבר מוצג בפס, לא מציגים שוב בcontect
   let html = `
     <div class="block-header">
-      <div class="block-eyebrow">${block.eyebrow}</div>
-      <div class="block-title">${block.title}</div>
+      ${block.title ? `<div class="block-title">${block.title}</div>` : ''}
       ${block.sub ? `<div class="block-sub">${block.sub}</div>` : ''}
     </div>
   `;
