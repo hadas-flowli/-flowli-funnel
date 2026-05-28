@@ -708,7 +708,18 @@ function maxScores() {
 }
 function worstArea(s) {
   const m = maxScores();
-  return Object.keys(s).sort((a,b) => (s[b]/(m[b]||1)) - (s[a]/(m[a]||1)))[0];
+  // היברידי: קטגוריה משמעותית (>=50%) עם הניקוד הגולמי הגבוה ביותר.
+  // אם אין כזו — fallback לאחוז הגבוה ביותר.
+  const significant = Object.keys(s).filter(k => (s[k] / (m[k] || 1)) >= 0.5);
+  const pool = significant.length > 0 ? significant : Object.keys(s);
+  return pool.sort((a, b) => {
+    if (significant.length > 0) {
+      const rawDiff = s[b] - s[a];
+      if (rawDiff !== 0) return rawDiff;
+      return (s[b] / m[b]) - (s[a] / m[a]);
+    }
+    return (s[b] / (m[b] || 1)) - (s[a] / (m[a] || 1));
+  })[0];
 }
 
 // ─── TOOL MAP ─────────────────────────────────────────────────────────────────
