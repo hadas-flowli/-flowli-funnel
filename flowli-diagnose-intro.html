@@ -241,32 +241,43 @@ body {
 
 .order-overlay {
   position: fixed; inset: 0;
-  background: rgba(246, 241, 230, 0.94);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: #F6F1E6;
   display: flex; align-items: center; justify-content: center;
-  z-index: 9999;
+  z-index: 99999;
   opacity: 0;
-  transition: opacity .25s ease;
+  transition: opacity .3s ease;
 }
 .order-overlay.visible { opacity: 1; }
 .order-text {
   font-family: 'Rubik', sans-serif;
-  font-size: clamp(22px, 3.2vw, 34px);
+  font-size: clamp(24px, 3.6vw, 40px);
   font-weight: 700;
   color: var(--ink);
   letter-spacing: -0.025em;
-  display: inline-flex; align-items: baseline; gap: 4px;
+  display: inline-flex; align-items: baseline; gap: 8px;
+  direction: rtl;
   opacity: 0;
-  transform: translateY(8px);
-  animation: order-text-in .35s .05s cubic-bezier(.25,.65,.35,1) forwards;
+  transform: translateY(10px);
+  animation: order-text-in .5s .15s cubic-bezier(.25,.65,.35,1) forwards;
 }
 @keyframes order-text-in {
   to { opacity: 1; transform: translateY(0); }
 }
+/* FLOWLI inline brand mark - matches the nav logo style */
+.order-text .brand-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  direction: ltr;
+  display: inline-block;
+}
+.order-text .brand-flow { color: #2A2A2A; }
+.order-text .brand-li   { color: var(--orange); }
+
 .order-text .dots {
   color: var(--orange);
   font-weight: 800;
+  display: inline-block;
 }
 .order-text .dots span {
   display: inline-block;
@@ -275,8 +286,8 @@ body {
 .order-text .dots span:nth-child(2) { animation-delay: 0.15s; }
 .order-text .dots span:nth-child(3) { animation-delay: 0.30s; }
 @keyframes dot-bounce {
-  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
-  30% { opacity: 1; transform: translateY(-3px); }
+  0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+  30%           { opacity: 1;    transform: translateY(-4px); }
 }
 
 /* ── POST-HERO SECTION (animates in AFTER hero finishes) ── */
@@ -682,12 +693,12 @@ function startDiagnosis() {
   const btn = document.querySelector('.btn-primary');
   if (!btn || btn.classList.contains('btn-loading')) return;
 
-  /* 1. Button → loading state */
+  /* 1. Button → loading state + text change */
   btn.classList.add('btn-loading');
   const label = btn.querySelector('span:not(.arrow)');
   if (label) label.textContent = 'עושים סדר...';
 
-  /* 2. Cards fly into the button (only if visible — desktop) */
+  /* 2. Each card "pulled" toward the button and disappears */
   const btnRect = btn.getBoundingClientRect();
   const btnCx = btnRect.left + btnRect.width / 2;
   const btnCy = btnRect.top + btnRect.height / 2;
@@ -699,25 +710,28 @@ function startDiagnosis() {
     const cardCy = r.top + r.height / 2;
     card.style.setProperty('--fly-x', (btnCx - cardCx) + 'px');
     card.style.setProperty('--fly-y', (btnCy - cardCy) + 'px');
-    card.style.animationDelay = (i * 70) + 'ms';
+    card.style.animationDelay = (i * 90) + 'ms';
     card.classList.add('flying');
   });
 
-  /* 3. Show "עושים סדר..." overlay after the cards start flying */
+  /* 3. Transition overlay: "עושים סדר עם FLOWLI..." (logo-style brand name) */
   setTimeout(() => {
     const overlay = document.createElement('div');
     overlay.className = 'order-overlay';
-    overlay.innerHTML = '<div class="order-text">עושים סדר<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+    overlay.innerHTML = '<div class="order-text">' +
+      '<span>עושים סדר עם</span>' +
+      '<span class="brand-name"><span class="brand-flow">FLOW</span><span class="brand-li">LI</span></span>' +
+      '<span class="dots"><span>.</span><span>.</span><span>.</span></span>' +
+      '</div>';
     document.body.appendChild(overlay);
-    /* force reflow so the transition triggers */
     void overlay.offsetWidth;
     setTimeout(() => overlay.classList.add('visible'), 20);
-  }, 450);
+  }, 700);
 
-  /* 4. Navigate to first question */
+  /* 4. Navigate to first question (hold the transition page ~1s) */
   setTimeout(() => {
     window.location.href = 'flowli-diagnose-step1.html';
-  }, 950);
+  }, 1700);
 }
 </script>
 <script src="flowli-legal.js"></script>
