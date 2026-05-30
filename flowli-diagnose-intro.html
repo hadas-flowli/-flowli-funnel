@@ -59,9 +59,9 @@ body {
 
 /* ── CONTENT (TRULY centered on page - cards don't push it) ── */
 .content {
-  position: relative; z-index: 4;
+  position: relative; z-index: 5;
   text-align: center;
-  max-width: 680px;
+  max-width: 620px;
   margin: 0 auto;
 }
 
@@ -264,10 +264,18 @@ body {
 
 /* ── RESPONSIVE: intermediate widths - cards smaller + closer to edge ── */
 @media (max-width: 1000px) {
-  .visual { left: 12px; width: 195px; height: 240px; }
-  .chaos-card { width: 188px; }
+  .visual { left: 8px; width: 168px; height: 230px; }
+  .chaos-card { width: 162px; padding: 9px 11px; }
+  .cc-icon { width: 24px; height: 24px; font-size: 13px; }
+  .cc-source { font-size: 10px; }
+  .cc-body { font-size: 12.5px; }
   .stage { padding: 24px 22px 36px; min-height: 500px; }
-  .content { max-width: 540px; }
+  .content { max-width: 460px; }
+  /* tighter pile for narrower visual */
+  .cc-1 { top:   0px; --x: -8px; --rot: -5deg; }
+  .cc-2 { top:  48px; --x:  6px; --rot:  6deg; }
+  .cc-3 { top:  96px; --x: -6px; --rot: -3deg; }
+  .cc-4 { top: 144px; --x:  8px; --rot:  4deg; }
 }
 
 /* ─── MOBILE: tiny cards still floating LEFT, text centered on page ─── */
