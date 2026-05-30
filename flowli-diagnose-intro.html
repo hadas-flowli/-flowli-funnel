@@ -98,11 +98,12 @@ body {
 
 .whisper {
   font-family: 'Rubik', sans-serif; font-weight: 500; font-style: italic;
-  font-size: clamp(20px, 2.6vw, 28px); line-height: 1.35; letter-spacing: -0.015em;
-  color: var(--orange-deep); margin-bottom: 22px;
+  font-size: clamp(17px, 2.1vw, 22px); line-height: 1.45; letter-spacing: -0.015em;
+  color: var(--orange-deep); margin-bottom: 36px;
   opacity: 0; transform: translateY(8px);
   animation: fadeUp 1s 1.0s forwards;
 }
+.whisper .line { display: block; }
 .whisper .bold { font-style: normal; font-weight: 800; color: var(--ink); }
 
 .sub {
@@ -480,15 +481,14 @@ body {
 
       <h1 class="main-msg">
         <span class="line">בלי בלאגן.</span>
-        <span class="line">בלי פניות שנשכחות.</span>
-        <span class="line">בלי לעבוד <span class="emphasis">מסביב לשעון</span>.</span>
+        <span class="line">בלי <span class="emphasis">פניות שנשכחות</span>.</span>
+        <span class="line">בלי לעבוד מסביב לשעון.</span>
       </h1>
 
-      <div class="whisper">שקט. סדר. <span class="bold">פחות עומס.</span></div>
-
-      <p class="sub">
-        אבחון קצר שיראה לך איפה אוטומציה יכולה לעשות את ההבדל הכי גדול בעסק שלך.
-      </p>
+      <div class="whisper">
+        <span class="line">לא בטוח שאת.ה צריכ.ה עוד מערכת.</span>
+        <span class="line">יכול להיות שאת.ה פשוט צריכ.ה <span class="bold">לדעת מאיפה להתחיל</span>.</span>
+      </div>
 
       <div class="cta-row">
         <button class="btn-primary" onclick="startDiagnosis()">
@@ -498,7 +498,7 @@ body {
       </div>
 
       <div class="trust-row">
-        <span class="item">2 דקות</span>
+        <span class="item">3 דקות</span>
         <span class="bullet">•</span>
         <span class="item">מותאם לעסק שלך</span>
         <span class="bullet">•</span>
@@ -511,32 +511,32 @@ body {
 </main>
 
 <section class="post-hero">
-  <div class="post-hero-eyebrow">3 שלבים · 2 דקות</div>
-  <h2 class="post-hero-title">מה תקבלו באבחון</h2>
-  <p class="post-hero-sub">תמונת מצב ברורה של איפה אוטומציה תיתן לך את ההחזר הכי גבוה - בלי ניחושים.</p>
+  <div class="post-hero-eyebrow">3 שלבים · 3 דקות</div>
+  <h2 class="post-hero-title">אחרי 3 דקות, יהיה לך:</h2>
+  <p class="post-hero-sub">לא עוד מערכת חדשה. תמונת מצב אמיתית של איפה אוטומציה באמת תעזור - דווקא בעסק שלך.</p>
   <div class="reveal-grid">
     <div class="reveal-card">
       <span class="rev-num">01</span>
-      <div class="ri">⏱</div>
+      <div class="ri">🔍</div>
       <div class="rev-content">
-        <h3>איפה הזמן נשרף</h3>
-        <p>מיפוי נקודות החיכוך שגוזלות לך שעות בלי שהבחנת.</p>
+        <h3>נגלה מה הכי מעכב אותך</h3>
+        <p>תמונת מצב מדויקת של נקודות החיכוך - לפי מה שקורה אצלך ביום-יום.</p>
       </div>
     </div>
     <div class="reveal-card">
       <span class="rev-num">02</span>
-      <div class="ri">🔥</div>
+      <div class="ri">⚡</div>
       <div class="rev-content">
-        <h3>מה הכי דחוף לפתור</h3>
-        <p>זיהוי המקום שגורם להכי הרבה כאב - ומה לעשות איתו קודם.</p>
+        <h3>נראה איפה אוטומציה יכולה לעזור</h3>
+        <p>לא כל בעיה דורשת מערכת. נסמן את המקומות שבהם זה באמת ייתן ROI.</p>
       </div>
     </div>
     <div class="reveal-card">
       <span class="rev-num">03</span>
-      <div class="ri">⚡</div>
+      <div class="ri">🧭</div>
       <div class="rev-content">
-        <h3>איזו אוטומציה תיתן הכי הרבה אימפקט</h3>
-        <p>המלצה ממוקדת לפי הציון שלך - מה לבנות קודם בעסק שלך.</p>
+        <h3>תקבלי נקודת התחלה ברורה</h3>
+        <p>בלי טירוף של כלים. רק הצעד הראשון - מותאם בדיוק לעסק שלך.</p>
       </div>
     </div>
   </div>
