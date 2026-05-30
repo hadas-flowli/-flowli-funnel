@@ -157,46 +157,45 @@ body {
   left: 24px;
   top: 50%;
   transform: translateY(-50%);
-  width: 230px;
-  height: 230px;
+  width: 220px;
+  height: 290px;
   z-index: 3;
 }
 
-/* Chaos cards - single-line notifications: icon + body inline */
+/* Chaos cards - notification style: head (icon + source + time) + body */
 .chaos-card {
   position: absolute;
   left: 50%;
   background: rgba(255,255,255,.94);
-  border: 1px solid rgba(0,0,0,.06); border-radius: 12px;
-  padding: 10px 12px; width: 230px;
+  border: 1px solid rgba(0,0,0,.06); border-radius: 14px;
+  padding: 10px 13px; width: 220px;
   box-shadow: 0 14px 30px rgba(180,110,60,.18);
   opacity: 0;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  display: flex; align-items: center; gap: 10px;
 }
 .chaos-card.urgent { border-color: rgba(242,107,31,.32); }
+.cc-head { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
 .cc-icon {
-  width: 30px; height: 30px; border-radius: 8px;
+  width: 28px; height: 28px; border-radius: 8px;
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 15px; color: #fff; flex-shrink: 0;
 }
-.cc-body {
-  font-size: 13.5px; color: var(--text); line-height: 1.35;
-  font-weight: 600;
-}
+.cc-source { font-size: 11px; font-weight: 700; color: var(--ink); }
+.cc-time   { font-size: 10px; color: var(--muted); margin-right: auto; font-family: 'JetBrains Mono', monospace; }
+.cc-body   { font-size: 13px; color: var(--text); line-height: 1.4; }
 
 .sticky {
   background: rgba(255,224,102,.96); border-color: #E5C84F !important;
   font-family: 'Rubik', sans-serif;
 }
-.sticky .cc-body { font-style: italic; font-weight: 500; }
+.sticky .cc-body { font-style: italic; }
 
-/* Vertical pile - compact single-line cards, light overlap */
+/* Vertical pile - 2-row notification cards, ~15% overlap */
 .cc-1 { top:   0px; --x: -16px; --rot: -5deg; z-index: 1; }
-.cc-2 { top:  48px; --x:  14px; --rot:  6deg; z-index: 2; }
-.cc-3 { top:  96px; --x: -10px; --rot: -3deg; z-index: 3; }
-.cc-4 { top: 144px; --x:  14px; --rot:  4deg; z-index: 4; }
+.cc-2 { top:  68px; --x:  14px; --rot:  6deg; z-index: 2; }
+.cc-3 { top: 136px; --x: -10px; --rot: -3deg; z-index: 3; }
+.cc-4 { top: 204px; --x:  14px; --rot:  4deg; z-index: 4; }
 
 @keyframes card-fall {
   0%   { opacity: 0; transform: translateX(-50%) translateX(var(--x)) translateY(-40px) rotate(var(--rot)) scale(.92); }
@@ -350,18 +349,20 @@ body {
 
 /* ── RESPONSIVE: intermediate widths - cards smaller + closer to edge ── */
 @media (max-width: 1000px) {
-  .visual { left: 8px; width: 168px; height: 230px; }
-  .chaos-card { width: 162px; padding: 9px 11px; }
+  .visual { left: 8px; width: 175px; height: 270px; }
+  .chaos-card { width: 168px; padding: 8px 10px; }
+  .cc-head { gap: 7px; margin-bottom: 4px; }
   .cc-icon { width: 24px; height: 24px; font-size: 13px; }
   .cc-source { font-size: 10px; }
-  .cc-body { font-size: 12.5px; }
-  .stage { padding: 24px 22px 36px; min-height: 500px; }
+  .cc-time { font-size: 9px; }
+  .cc-body { font-size: 12px; }
+  .stage { padding: 20px 22px 28px; min-height: 440px; }
   .content { max-width: 460px; }
-  /* tighter pile for narrower visual */
+  /* spacing for shorter cards on tablet */
   .cc-1 { top:   0px; --x: -8px; --rot: -5deg; }
-  .cc-2 { top:  48px; --x:  6px; --rot:  6deg; }
-  .cc-3 { top:  96px; --x: -6px; --rot: -3deg; }
-  .cc-4 { top: 144px; --x:  8px; --rot:  4deg; }
+  .cc-2 { top:  62px; --x:  6px; --rot:  6deg; }
+  .cc-3 { top: 124px; --x: -6px; --rot: -3deg; }
+  .cc-4 { top: 186px; --x:  8px; --rot:  4deg; }
 }
 
 /* ─── MOBILE: tiny cards float on left, text stays FULLY centered (not pushed) ─── */
@@ -383,10 +384,10 @@ body {
     left: 0;
     top: 6px;
     transform: none;
-    width: 78px;
-    height: 220px;
+    width: 130px;
+    height: 200px;
     z-index: 2;
-    opacity: 0.88;
+    opacity: 0.92;
   }
 
   /* content stays FULLY centered - no padding-left, full width */
@@ -396,16 +397,19 @@ body {
     z-index: 5;  /* above the cards if they peek through */
   }
 
+  /* MOBILE simplified: icon + body inline, hide source/time */
   .chaos-card {
-    width: 78px; padding: 5px 7px;
-    border-radius: 8px;
-    box-shadow: 0 5px 12px rgba(180,110,60,.20);
+    width: 128px; padding: 7px 9px;
+    border-radius: 10px;
+    box-shadow: 0 6px 14px rgba(180,110,60,.18);
+    display: flex; align-items: center; gap: 7px;
   }
-  .cc-head { gap: 3px; margin-bottom: 2px; }
-  .cc-icon { width: 14px; height: 14px; font-size: 8px; border-radius: 4px; }
-  .cc-source { font-size: 7.5px; }
-  .cc-time { font-size: 6.5px; display: none; }  /* hide time on mobile to save space */
-  .cc-body { font-size: 8.5px; line-height: 1.3; }
+  .chaos-card .cc-head { display: contents; }
+  .chaos-card .cc-source,
+  .chaos-card .cc-time { display: none; }
+  .cc-icon { width: 22px; height: 22px; font-size: 12px; border-radius: 6px; }
+  .cc-body { font-size: 11px; line-height: 1.3; font-weight: 600; }
+  .sticky .cc-body { font-style: italic; font-weight: 500; }
 
   /* tighter overlapping pile on mobile */
   .cc-1 { top:   0px; --x: -4px; --rot: -4deg; }
@@ -416,9 +420,10 @@ body {
 
 /* ─── extra-narrow: very small phones ─── */
 @media (max-width: 380px) {
-  .visual { width: 68px; height: 200px; }
-  .chaos-card { width: 68px; padding: 4px 6px; }
-  .cc-body { font-size: 8px; }
+  .visual { width: 110px; height: 190px; }
+  .chaos-card { width: 108px; padding: 6px 8px; gap: 6px; }
+  .cc-icon { width: 20px; height: 20px; font-size: 11px; }
+  .cc-body { font-size: 10px; }
   .main-msg { font-size: 21px; }
 }
 </style>
@@ -465,23 +470,39 @@ body {
     <!-- ── LEFT: VISUAL - vertical stack of chaos cards, no circle ── -->
     <div class="visual">
       <div class="chaos-card cc-1 urgent">
-        <span class="cc-icon" style="background:#E84D4D;">📞</span>
-        <span class="cc-body">8 שיחות שלא נענו</span>
+        <div class="cc-head">
+          <span class="cc-icon" style="background:#E84D4D;">📞</span>
+          <span class="cc-source">שיחות שלא נענו</span>
+          <span class="cc-time">היום</span>
+        </div>
+        <div class="cc-body">8 שיחות ממתינות לחזרה</div>
       </div>
 
       <div class="chaos-card cc-2">
-        <span class="cc-icon" style="background:#25D366;">💬</span>
-        <span class="cc-body">14 הודעות חדשות</span>
+        <div class="cc-head">
+          <span class="cc-icon" style="background:#25D366;">💬</span>
+          <span class="cc-source">הודעות חדשות</span>
+          <span class="cc-time">עכשיו</span>
+        </div>
+        <div class="cc-body">14 הודעות מהיום</div>
       </div>
 
       <div class="chaos-card cc-3 sticky">
-        <span class="cc-icon" style="background:#E8A030;">📝</span>
-        <span class="cc-body">לשלוח הצעת מחיר</span>
+        <div class="cc-head">
+          <span class="cc-icon" style="background:#E8A030;">📝</span>
+          <span class="cc-source">משימה</span>
+          <span class="cc-time">דחוף</span>
+        </div>
+        <div class="cc-body">לשלוח הצעת מחיר</div>
       </div>
 
       <div class="chaos-card cc-4">
-        <span class="cc-icon" style="background:#7A5AF0;">📅</span>
-        <span class="cc-body">אפשר להזיז את הפגישה למחר?</span>
+        <div class="cc-head">
+          <span class="cc-icon" style="background:#7A5AF0;">📅</span>
+          <span class="cc-source">פגישה</span>
+          <span class="cc-time">מחר</span>
+        </div>
+        <div class="cc-body">"אפשר להזיז את הפגישה?"</div>
       </div>
     </div>
 
