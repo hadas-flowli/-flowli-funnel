@@ -521,7 +521,7 @@ function render() {
   document.getElementById('btnBack').disabled              = currentBlock === 0;
 
   const isLast = currentBlock === blocks.length - 1;
-  document.getElementById('btnNextLabel').textContent = isLast ? 'כמעט סיימנו' : 'המשך';
+  document.getElementById('btnNextLabel').textContent = isLast ? 'לאבחון שלי' : 'המשך';
 
   // build HTML — eyebrow כבר מוצג בפס, לא מציגים שוב בcontect
   let html = `
@@ -771,7 +771,7 @@ async function submitQuiz() {
     console.warn('Supabase save failed:', e);
   }
 
-  window.location.href = 'flowli-diagnose-page.html';
+  window.location.href = 'flowli-diagnose-loading.html';
 }
 
 // ─── TOAST ───────────────────────────────────────────────────────────────────
