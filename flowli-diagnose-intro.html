@@ -71,16 +71,12 @@ body {
   color: var(--orange-deep); background: var(--orange-pale);
   border: 1px solid var(--orange-mid); border-radius: 20px; padding: 6px 14px;
   margin-bottom: 14px; letter-spacing: .04em;
-  opacity: 0; transform: translateY(8px);
-  animation: fadeUp .8s .1s forwards;
 }
 
 .main-msg {
   font-family: 'Rubik', sans-serif; font-weight: 800;
   font-size: clamp(38px, 5.4vw, 64px); line-height: 1.38; letter-spacing: -0.04em;
   color: var(--ink); margin-bottom: 8px;
-  opacity: 0; transform: translateY(14px);
-  animation: fadeUp .9s .2s forwards;
 }
 .main-msg .line { display: block; }
 .emphasis {
@@ -100,16 +96,12 @@ body {
   font-family: 'Rubik', sans-serif; font-weight: 500; font-style: italic;
   font-size: clamp(18px, 2.2vw, 24px); line-height: 1.35; letter-spacing: -0.015em;
   color: var(--orange-deep); margin-bottom: 14px;
-  opacity: 0; transform: translateY(8px);
-  animation: fadeUp 1s 1.0s forwards;
 }
 .whisper .bold { font-style: normal; font-weight: 800; color: var(--ink); }
 
 .sub {
   font-size: 13px; line-height: 1.55; color: #3a3a3a; max-width: 540px;
   margin: 0 auto 18px;
-  opacity: 0; transform: translateY(8px);
-  animation: fadeUp 1s 1.6s forwards;
 }
 .sub .sub-bold {
   font-weight: 700; color: var(--ink);
@@ -118,8 +110,6 @@ body {
 .cta-row {
   display: flex; align-items: center; justify-content: center; gap: 22px; flex-wrap: wrap;
   margin-bottom: 12px;
-  opacity: 0; transform: translateY(8px);
-  animation: fadeUp 1s 2.0s forwards;
 }
 .btn-primary {
   display: inline-flex; align-items: center; gap: 10px;
@@ -145,8 +135,6 @@ body {
   display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: .03em;
-  opacity: 0; transform: translateY(8px);
-  animation: fadeUp 1s 2.3s forwards;
 }
 .trust-row .item { display: inline-flex; align-items: center; gap: 6px; }
 .trust-row .bullet { color: #DBC9A9; font-weight: 400; }
@@ -305,20 +293,7 @@ body {
   padding: 4px 28px 12px;
 }
 
-/* Staggered entry of post-hero elements (hero finishes ~3s, then this) */
-.post-hero-title,
-.post-hero-sub,
-.reveal-card,
-.post-hero-outro {
-  opacity: 0;
-  transform: translateY(14px);
-}
-.post-hero-title  { animation: fadeUp .8s 2.9s cubic-bezier(.25,.65,.35,1) forwards; }
-.post-hero-sub    { animation: fadeUp .8s 3.1s cubic-bezier(.25,.65,.35,1) forwards; }
-.reveal-grid .reveal-card:nth-child(1) { animation: fadeUp .8s 3.35s cubic-bezier(.25,.65,.35,1) forwards; }
-.reveal-grid .reveal-card:nth-child(2) { animation: fadeUp .8s 3.55s cubic-bezier(.25,.65,.35,1) forwards; }
-.reveal-grid .reveal-card:nth-child(3) { animation: fadeUp .8s 3.75s cubic-bezier(.25,.65,.35,1) forwards; }
-.post-hero-outro  { animation: fadeUp .8s 4.1s cubic-bezier(.25,.65,.35,1) forwards; }
+/* No entry animations for post-hero — everything is visible on load */
 .post-hero-eyebrow {
   text-align: center;
   font-family: 'JetBrains Mono', monospace;
