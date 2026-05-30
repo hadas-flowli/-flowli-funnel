@@ -216,8 +216,12 @@ body {
 }
 
 /* ── CLICK ANIMATION: cards exit upward (reverse of entry) + transition overlay ── */
+/* longhand props so inline animation-delay can override per card (stagger) */
 .chaos-card.exiting {
-  animation: card-fall-out 0.42s cubic-bezier(.55,0,.7,.5) forwards !important;
+  animation-name: card-fall-out;
+  animation-duration: 0.42s;
+  animation-timing-function: cubic-bezier(.55,0,.7,.5);
+  animation-fill-mode: forwards;
   pointer-events: none;
 }
 @keyframes card-fall-out {
@@ -701,17 +705,19 @@ function startDiagnosis() {
   const label = btn.querySelector('span:not(.arrow)');
   if (label) label.textContent = 'עושים סדר...';
 
-  /* 2. Cards EXIT upward — reverse of entry (cc-4 first, cc-1 last) */
+  /* 2. Cards EXIT upward — reverse of entry, ONE BY ONE (cc-4 first, cc-1 last) */
   const cards = document.querySelectorAll('.chaos-card');
   const total = cards.length;
+  const STAGGER = 160;  /* ms between each card exit start */
   cards.forEach((card, i) => {
     if (card.getBoundingClientRect().width === 0) return;  /* skip hidden (mobile) */
     /* reverse order: last card in DOM (cc-4) exits first */
-    card.style.animationDelay = ((total - 1 - i) * 110) + 'ms';
+    card.style.animationDelay = ((total - 1 - i) * STAGGER) + 'ms';
     card.classList.add('exiting');
   });
+  /* last card starts exiting at: (4-1) * 160 = 480ms, finishes at 480 + 420 = 900ms */
 
-  /* 3. Transition overlay: "עושים סדר עם flowli..." (logo brand) */
+  /* 3. Transition overlay appears right after all cards are gone */
   setTimeout(() => {
     const overlay = document.createElement('div');
     overlay.className = 'order-overlay';
@@ -723,12 +729,22 @@ function startDiagnosis() {
     document.body.appendChild(overlay);
     void overlay.offsetWidth;
     setTimeout(() => overlay.classList.add('visible'), 20);
-  }, 700);
+  }, 950);
 
-  /* 4. Navigate to first question (hold the transition page ~1s) */
+  /* 4. Fade out the overlay text before navigation - smooth handoff */
+  setTimeout(() => {
+    const text = document.querySelector('.order-text');
+    if (text) {
+      text.style.transition = 'opacity .35s ease, transform .35s ease';
+      text.style.opacity = '0';
+      text.style.transform = 'translateY(-6px)';
+    }
+  }, 2100);
+
+  /* 5. Navigate to first question (overlay cream bg = step1 cream bg = no flash) */
   setTimeout(() => {
     window.location.href = 'flowli-diagnose-step1.html';
-  }, 1700);
+  }, 2400);
 }
 </script>
 <script src="flowli-legal.js"></script>
