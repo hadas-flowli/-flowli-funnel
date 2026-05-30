@@ -155,7 +155,7 @@ body {
   top: 50%;
   transform: translateY(-50%);
   width: 215px;
-  height: 260px;
+  height: 310px;
   z-index: 3;
 }
 
@@ -188,11 +188,11 @@ body {
 }
 .sticky .cc-body { font-style: italic; }
 
-/* Vertical pile - cards partially overlap each other (~40% overlap) */
+/* Vertical pile - cards overlap each other (~25% overlap) - readable text */
 .cc-1 { top:   0px; --x: -16px; --rot: -5deg; z-index: 1; }
-.cc-2 { top:  52px; --x:  14px; --rot:  6deg; z-index: 2; }
-.cc-3 { top: 104px; --x: -10px; --rot: -3deg; z-index: 3; }
-.cc-4 { top: 156px; --x:  14px; --rot:  4deg; z-index: 4; }
+.cc-2 { top:  70px; --x:  14px; --rot:  6deg; z-index: 2; }
+.cc-3 { top: 140px; --x: -10px; --rot: -3deg; z-index: 3; }
+.cc-4 { top: 210px; --x:  14px; --rot:  4deg; z-index: 4; }
 
 @keyframes card-fall {
   0%   { opacity: 0; transform: translateX(-50%) translateX(var(--x)) translateY(-40px) rotate(var(--rot)) scale(.92); }
@@ -215,44 +215,103 @@ body {
 /* ── POST-HERO SECTION ── */
 .post-hero {
   position: relative; z-index: 5;
-  max-width: 900px; margin: 0 auto;
-  padding: 50px 28px 40px;
+  max-width: 1080px; margin: 0 auto;
+  padding: 60px 28px 50px;
+}
+.post-hero-eyebrow {
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--orange-deep);
+  letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight: 600;
 }
 .post-hero-title {
-  font-family: 'Rubik', sans-serif; font-weight: 700;
-  font-size: clamp(22px, 3vw, 30px); color: var(--ink);
-  text-align: center; margin-bottom: 28px;
-  letter-spacing: -0.02em;
+  font-family: 'Rubik', sans-serif; font-weight: 800;
+  font-size: clamp(24px, 3.4vw, 36px); color: var(--ink);
+  text-align: center; margin-bottom: 8px;
+  letter-spacing: -0.025em; line-height: 1.2;
+}
+.post-hero-sub {
+  text-align: center;
+  font-size: 15px; color: var(--muted);
+  max-width: 520px; margin: 0 auto 38px;
+  line-height: 1.5;
 }
 .reveal-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
 }
 .reveal-card {
-  background: linear-gradient(160deg, #FFF7EA 0%, #F9EDDE 100%);
-  border: 1px solid rgba(255,255,255,.92);
-  border-radius: 16px; padding: 20px 18px;
-  box-shadow: 0 2px 10px rgba(180,110,60,.06);
-  display: flex; flex-direction: column; align-items: center;
-  text-align: center; gap: 12px;
-  transition: transform .2s, box-shadow .2s;
+  position: relative;
+  background: #fff;
+  border: 1px solid rgba(242,107,31,.14);
+  border-radius: 20px; padding: 26px 22px 24px;
+  box-shadow: 0 4px 16px rgba(180,110,60,.06);
+  display: flex; flex-direction: column; align-items: flex-start;
+  text-align: right;
+  gap: 14px;
+  transition: transform .28s cubic-bezier(.25,.65,.35,1), box-shadow .28s, border-color .28s;
+  overflow: hidden;
 }
-.reveal-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(180,110,60,.14); }
+.reveal-card::before {
+  content: '';
+  position: absolute; top: 0; right: 0; left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--orange) 0%, #FBBA76 100%);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .35s cubic-bezier(.25,.65,.35,1);
+}
+.reveal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 38px rgba(180,110,60,.18);
+  border-color: rgba(242,107,31,.32);
+}
+.reveal-card:hover::before { transform: scaleX(1); }
+
+.rev-num {
+  position: absolute; top: 18px; left: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  color: var(--orange-deep);
+  background: var(--orange-pale);
+  padding: 3px 8px; border-radius: 999px;
+  letter-spacing: .08em;
+}
 .reveal-card .ri {
-  width: 42px; height: 42px; border-radius: 11px;
-  background: var(--ink); color: #fff;
+  width: 54px; height: 54px; border-radius: 15px;
+  background: linear-gradient(135deg, #FEF0E7 0%, #FDDDBD 100%);
+  color: var(--orange-deep);
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
+  font-size: 24px;
+  border: 1px solid rgba(242,107,31,.20);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7),
+              0 2px 8px rgba(242,107,31,.10);
+}
+.reveal-card .rev-content {
+  display: flex; flex-direction: column; gap: 6px;
 }
 .reveal-card h3 {
-  font-family: 'Rubik', sans-serif; font-size: 15px; font-weight: 700;
-  color: var(--ink); line-height: 1.35; letter-spacing: -0.01em;
+  font-family: 'Rubik', sans-serif;
+  font-size: 17px; font-weight: 700;
+  color: var(--ink); line-height: 1.35; letter-spacing: -0.015em;
+}
+.reveal-card p {
+  font-size: 13.5px; color: #5a5550;
+  line-height: 1.55;
+}
+@media (max-width: 900px) {
+  .reveal-grid { grid-template-columns: 1fr; gap: 12px; }
+  .reveal-card { flex-direction: row; align-items: center; padding: 18px 20px; gap: 16px; }
+  .reveal-card .ri { width: 46px; height: 46px; font-size: 20px; flex-shrink: 0; }
+  .reveal-card h3 { font-size: 15.5px; margin-bottom: 2px; }
+  .reveal-card p { font-size: 12.5px; }
+  .reveal-card .rev-content { flex: 1; }
+  .rev-num { display: none; }
 }
 @media (max-width: 640px) {
-  .post-hero { padding: 24px 22px 30px; }
-  .reveal-grid { grid-template-columns: 1fr; gap: 10px; }
-  .reveal-card { flex-direction: row; text-align: right; padding: 14px 16px; gap: 14px; }
-  .reveal-card .ri { width: 36px; height: 36px; font-size: 17px; }
-  .reveal-card h3 { font-size: 14px; }
+  .post-hero { padding: 36px 22px 30px; }
+  .post-hero-sub { font-size: 13.5px; margin-bottom: 24px; }
 }
 
 /* footer micro */
@@ -278,62 +337,62 @@ body {
   .cc-4 { top: 144px; --x:  8px; --rot:  4deg; }
 }
 
-/* ─── MOBILE: tiny cards still floating LEFT, text centered on page ─── */
+/* ─── MOBILE: tiny cards float on left, text stays FULLY centered (not pushed) ─── */
 @media (max-width: 640px) {
   .top-nav { padding: 14px 18px 6px; }
   .nav-badge { display: none; }
   .stage { padding: 20px 14px 28px; min-height: 480px; }
 
   .pill { margin-bottom: 12px; font-size: 10px; padding: 5px 11px; }
-  .main-msg { font-size: 22px; margin-bottom: 12px; line-height: 1.18; letter-spacing: -0.03em; }
-  .whisper { font-size: 15px; margin-bottom: 12px; }
-  .sub { font-size: 13px; line-height: 1.55; margin-bottom: 20px; max-width: 100%; }
+  .main-msg { font-size: 24px; margin-bottom: 12px; line-height: 1.18; letter-spacing: -0.03em; }
+  .whisper { font-size: 16px; margin-bottom: 12px; }
+  .sub { font-size: 13.5px; line-height: 1.55; margin-bottom: 20px; max-width: 100%; }
   .cta-row { gap: 12px; margin-bottom: 14px; }
   .btn-primary { font-size: 14px; padding: 13px 22px; }
   .trust-row { font-size: 10px; gap: 6px; }
 
-  /* visual tiny + far-left, sits behind/beside the centered text */
+  /* tiny cards on far-left as decoration - DO NOT push the text */
   .visual {
-    left: 2px;
-    top: 8px;
+    left: 0;
+    top: 6px;
     transform: none;
-    width: 108px;
-    height: 200px;
+    width: 78px;
+    height: 220px;
     z-index: 2;
-    opacity: 0.92;
+    opacity: 0.88;
   }
 
-  /* push text away from cards so they don't overlap the words */
+  /* content stays FULLY centered - no padding-left, full width */
   .content {
-    padding-left: 110px;
     max-width: 100%;
+    padding-left: 0;
+    z-index: 5;  /* above the cards if they peek through */
   }
 
   .chaos-card {
-    width: 105px; padding: 6px 8px;
-    border-radius: 9px;
-    box-shadow: 0 6px 14px rgba(180,110,60,.18);
+    width: 78px; padding: 5px 7px;
+    border-radius: 8px;
+    box-shadow: 0 5px 12px rgba(180,110,60,.20);
   }
-  .cc-head { gap: 4px; margin-bottom: 3px; }
-  .cc-icon { width: 16px; height: 16px; font-size: 9px; border-radius: 5px; }
-  .cc-source { font-size: 8.5px; }
-  .cc-time { font-size: 7.5px; }
-  .cc-body { font-size: 9.5px; line-height: 1.3; }
+  .cc-head { gap: 3px; margin-bottom: 2px; }
+  .cc-icon { width: 14px; height: 14px; font-size: 8px; border-radius: 4px; }
+  .cc-source { font-size: 7.5px; }
+  .cc-time { font-size: 6.5px; display: none; }  /* hide time on mobile to save space */
+  .cc-body { font-size: 8.5px; line-height: 1.3; }
 
   /* tighter overlapping pile on mobile */
-  .cc-1 { top:   0px; --x: -6px; --rot: -4deg; }
-  .cc-2 { top:  44px; --x:  4px; --rot:  4deg; }
-  .cc-3 { top:  88px; --x: -4px; --rot: -3deg; }
-  .cc-4 { top: 132px; --x:  6px; --rot:  3deg; }
+  .cc-1 { top:   0px; --x: -4px; --rot: -4deg; }
+  .cc-2 { top:  46px; --x:  3px; --rot:  4deg; }
+  .cc-3 { top:  92px; --x: -3px; --rot: -3deg; }
+  .cc-4 { top: 138px; --x:  4px; --rot:  3deg; }
 }
 
 /* ─── extra-narrow: very small phones ─── */
 @media (max-width: 380px) {
-  .visual { width: 92px; height: 180px; }
-  .chaos-card { width: 90px; padding: 5px 7px; }
-  .cc-body { font-size: 9px; }
-  .content { padding-left: 92px; }
-  .main-msg { font-size: 20px; }
+  .visual { width: 68px; height: 200px; }
+  .chaos-card { width: 68px; padding: 4px 6px; }
+  .cc-body { font-size: 8px; }
+  .main-msg { font-size: 21px; }
 }
 </style>
 </head>
@@ -452,19 +511,33 @@ body {
 </main>
 
 <section class="post-hero">
+  <div class="post-hero-eyebrow">3 שלבים · 2 דקות</div>
   <h2 class="post-hero-title">מה תקבלו באבחון</h2>
+  <p class="post-hero-sub">תמונת מצב ברורה של איפה אוטומציה תיתן לך את ההחזר הכי גבוה - בלי ניחושים.</p>
   <div class="reveal-grid">
     <div class="reveal-card">
+      <span class="rev-num">01</span>
       <div class="ri">⏱</div>
-      <h3>איפה הזמן נשרף</h3>
+      <div class="rev-content">
+        <h3>איפה הזמן נשרף</h3>
+        <p>מיפוי נקודות החיכוך שגוזלות לך שעות בלי שהבחנת.</p>
+      </div>
     </div>
     <div class="reveal-card">
+      <span class="rev-num">02</span>
       <div class="ri">🔥</div>
-      <h3>מה הכי דחוף לפתור</h3>
+      <div class="rev-content">
+        <h3>מה הכי דחוף לפתור</h3>
+        <p>זיהוי המקום שגורם להכי הרבה כאב - ומה לעשות איתו קודם.</p>
+      </div>
     </div>
     <div class="reveal-card">
+      <span class="rev-num">03</span>
       <div class="ri">⚡</div>
-      <h3>איזו אוטומציה תיתן הכי הרבה אימפקט</h3>
+      <div class="rev-content">
+        <h3>איזו אוטומציה תיתן הכי הרבה אימפקט</h3>
+        <p>המלצה ממוקדת לפי הציון שלך - מה לבנות קודם בעסק שלך.</p>
+      </div>
     </div>
   </div>
 </section>
