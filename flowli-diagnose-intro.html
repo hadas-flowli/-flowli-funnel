@@ -77,14 +77,14 @@ body {
 
 .main-msg {
   font-family: 'Rubik', sans-serif; font-weight: 800;
-  font-size: clamp(38px, 5.4vw, 64px); line-height: 1.08; letter-spacing: -0.04em;
+  font-size: clamp(38px, 5.4vw, 64px); line-height: 1.38; letter-spacing: -0.04em;
   color: var(--ink); margin-bottom: 8px;
   opacity: 0; transform: translateY(14px);
   animation: fadeUp .9s .2s forwards;
 }
 .main-msg .line { display: block; }
 .emphasis {
-  position: relative; display: inline-block;
+  position: relative; /* display: inline-block; */
   font-style: italic; font-weight: 800;
   color: var(--orange-deep);
 }
@@ -215,17 +215,16 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── CLICK ANIMATION: cards fly into button + "עושים סדר..." overlay ── */
-.chaos-card.flying {
-  animation: card-fly-to-btn 0.45s cubic-bezier(.55,0,.7,.5) forwards !important;
+/* ── CLICK ANIMATION: cards exit upward (reverse of entry) + transition overlay ── */
+.chaos-card.exiting {
+  animation: card-fall-out 0.42s cubic-bezier(.55,0,.7,.5) forwards !important;
   pointer-events: none;
 }
-@keyframes card-fly-to-btn {
+@keyframes card-fall-out {
   to {
-    transform: translate(var(--fly-x, 0), var(--fly-y, 0))
-               translateX(-50%) translateX(var(--x))
-               rotate(var(--rot)) scale(0.1);
     opacity: 0;
+    transform: translateX(-50%) translateX(var(--x))
+               translateY(-50px) rotate(var(--rot)) scale(.92);
   }
 }
 
@@ -242,7 +241,8 @@ body {
 .order-overlay {
   position: fixed; inset: 0;
   background: #F6F1E6;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 32vh;     /* text sits in upper third, not dead-center */
   z-index: 99999;
   opacity: 0;
   transition: opacity .3s ease;
@@ -263,10 +263,10 @@ body {
 @keyframes order-text-in {
   to { opacity: 1; transform: translateY(0); }
 }
-/* FLOWLI inline brand mark - matches the nav logo style */
+/* flowli inline brand mark - matches the nav logo style (lowercase) */
 .order-text .brand-name {
   font-family: 'Inter', sans-serif;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: -0.035em;
   direction: ltr;
   display: inline-block;
@@ -275,7 +275,6 @@ body {
 .order-text .brand-li   { color: var(--orange); }
 
 .order-text .dots {
-  color: var(--orange);
   font-weight: 800;
   display: inline-block;
 }
@@ -283,6 +282,10 @@ body {
   display: inline-block;
   animation: dot-bounce 0.9s infinite;
 }
+/* 2 dark dots + 1 orange */
+.order-text .dots span:nth-child(1),
+.order-text .dots span:nth-child(2) { color: var(--ink); }
+.order-text .dots span:nth-child(3) { color: var(--orange); }
 .order-text .dots span:nth-child(2) { animation-delay: 0.15s; }
 .order-text .dots span:nth-child(3) { animation-delay: 0.30s; }
 @keyframes dot-bounce {
@@ -698,29 +701,23 @@ function startDiagnosis() {
   const label = btn.querySelector('span:not(.arrow)');
   if (label) label.textContent = 'עושים סדר...';
 
-  /* 2. Each card "pulled" toward the button and disappears */
-  const btnRect = btn.getBoundingClientRect();
-  const btnCx = btnRect.left + btnRect.width / 2;
-  const btnCy = btnRect.top + btnRect.height / 2;
-
-  document.querySelectorAll('.chaos-card').forEach((card, i) => {
-    const r = card.getBoundingClientRect();
-    if (r.width === 0) return;          /* skip hidden (mobile) */
-    const cardCx = r.left + r.width / 2;
-    const cardCy = r.top + r.height / 2;
-    card.style.setProperty('--fly-x', (btnCx - cardCx) + 'px');
-    card.style.setProperty('--fly-y', (btnCy - cardCy) + 'px');
-    card.style.animationDelay = (i * 90) + 'ms';
-    card.classList.add('flying');
+  /* 2. Cards EXIT upward — reverse of entry (cc-4 first, cc-1 last) */
+  const cards = document.querySelectorAll('.chaos-card');
+  const total = cards.length;
+  cards.forEach((card, i) => {
+    if (card.getBoundingClientRect().width === 0) return;  /* skip hidden (mobile) */
+    /* reverse order: last card in DOM (cc-4) exits first */
+    card.style.animationDelay = ((total - 1 - i) * 110) + 'ms';
+    card.classList.add('exiting');
   });
 
-  /* 3. Transition overlay: "עושים סדר עם FLOWLI..." (logo-style brand name) */
+  /* 3. Transition overlay: "עושים סדר עם flowli..." (logo brand) */
   setTimeout(() => {
     const overlay = document.createElement('div');
     overlay.className = 'order-overlay';
     overlay.innerHTML = '<div class="order-text">' +
       '<span>עושים סדר עם</span>' +
-      '<span class="brand-name"><span class="brand-flow">FLOW</span><span class="brand-li">LI</span></span>' +
+      '<span class="brand-name"><span class="brand-flow">flow</span><span class="brand-li">li</span></span>' +
       '<span class="dots"><span>.</span><span>.</span><span>.</span></span>' +
       '</div>';
     document.body.appendChild(overlay);
