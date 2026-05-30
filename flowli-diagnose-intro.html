@@ -98,19 +98,21 @@ body {
 
 .whisper {
   font-family: 'Rubik', sans-serif; font-weight: 500; font-style: italic;
-  font-size: clamp(15px, 1.8vw, 20px); line-height: 1.4; letter-spacing: -0.015em;
-  color: var(--orange-deep); margin-bottom: 22px;
+  font-size: clamp(18px, 2.2vw, 24px); line-height: 1.35; letter-spacing: -0.015em;
+  color: var(--orange-deep); margin-bottom: 14px;
   opacity: 0; transform: translateY(8px);
   animation: fadeUp 1s 1.0s forwards;
 }
-.whisper .line { display: block; }
 .whisper .bold { font-style: normal; font-weight: 800; color: var(--ink); }
 
 .sub {
-  font-size: 17px; line-height: 1.65; color: #3a3a3a; max-width: 560px;
-  margin: 0 auto 32px;
+  font-size: 15px; line-height: 1.55; color: #3a3a3a; max-width: 540px;
+  margin: 0 auto 20px;
   opacity: 0; transform: translateY(8px);
   animation: fadeUp 1s 1.6s forwards;
+}
+.sub .sub-bold {
+  font-weight: 700; color: var(--ink);
 }
 
 .cta-row {
@@ -155,45 +157,46 @@ body {
   left: 24px;
   top: 50%;
   transform: translateY(-50%);
-  width: 215px;
-  height: 290px;
+  width: 230px;
+  height: 230px;
   z-index: 3;
 }
 
-/* Chaos cards stacking vertically, partial overlap, one falling after the other */
+/* Chaos cards - single-line notifications: icon + body inline */
 .chaos-card {
   position: absolute;
   left: 50%;
   background: rgba(255,255,255,.94);
-  border: 1px solid rgba(0,0,0,.06); border-radius: 14px;
-  padding: 10px 13px; width: 210px;
+  border: 1px solid rgba(0,0,0,.06); border-radius: 12px;
+  padding: 10px 12px; width: 230px;
   box-shadow: 0 14px 30px rgba(180,110,60,.18);
   opacity: 0;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; gap: 10px;
 }
 .chaos-card.urgent { border-color: rgba(242,107,31,.32); }
-.cc-head { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; }
 .cc-icon {
-  width: 28px; height: 28px; border-radius: 8px;
+  width: 30px; height: 30px; border-radius: 8px;
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 15px; color: #fff; flex-shrink: 0;
 }
-.cc-source { font-size: 11px; font-weight: 700; color: var(--ink); }
-.cc-time   { font-size: 10px; color: var(--muted); margin-right: auto; font-family: 'JetBrains Mono', monospace; }
-.cc-body   { font-size: 14px; color: var(--text); line-height: 1.4; }
+.cc-body {
+  font-size: 13.5px; color: var(--text); line-height: 1.35;
+  font-weight: 600;
+}
 
 .sticky {
   background: rgba(255,224,102,.96); border-color: #E5C84F !important;
   font-family: 'Rubik', sans-serif;
 }
-.sticky .cc-body { font-style: italic; }
+.sticky .cc-body { font-style: italic; font-weight: 500; }
 
-/* Vertical pile - cards overlap each other (~15% overlap) - all readable */
+/* Vertical pile - compact single-line cards, light overlap */
 .cc-1 { top:   0px; --x: -16px; --rot: -5deg; z-index: 1; }
-.cc-2 { top:  64px; --x:  14px; --rot:  6deg; z-index: 2; }
-.cc-3 { top: 128px; --x: -10px; --rot: -3deg; z-index: 3; }
-.cc-4 { top: 192px; --x:  14px; --rot:  4deg; z-index: 4; }
+.cc-2 { top:  48px; --x:  14px; --rot:  6deg; z-index: 2; }
+.cc-3 { top:  96px; --x: -10px; --rot: -3deg; z-index: 3; }
+.cc-4 { top: 144px; --x:  14px; --rot:  4deg; z-index: 4; }
 
 @keyframes card-fall {
   0%   { opacity: 0; transform: translateX(-50%) translateX(var(--x)) translateY(-40px) rotate(var(--rot)) scale(.92); }
@@ -217,7 +220,7 @@ body {
 .post-hero {
   position: relative; z-index: 5;
   max-width: 1080px; margin: 0 auto;
-  padding: 16px 28px 20px;
+  padding: 10px 28px 14px;
 }
 .post-hero-eyebrow {
   text-align: center;
@@ -229,15 +232,35 @@ body {
 }
 .post-hero-title {
   font-family: 'Rubik', sans-serif; font-weight: 800;
-  font-size: clamp(20px, 2.6vw, 28px); color: var(--ink);
-  text-align: center; margin-bottom: 6px;
+  font-size: clamp(19px, 2.4vw, 26px); color: var(--ink);
+  text-align: center; margin-bottom: 4px;
   letter-spacing: -0.025em; line-height: 1.2;
 }
 .post-hero-sub {
   text-align: center;
-  font-size: 14px; color: var(--muted);
-  max-width: 520px; margin: 0 auto 22px;
+  font-size: 13.5px; color: #4a4540;
+  max-width: 560px; margin: 0 auto 14px;
   line-height: 1.5;
+}
+.post-hero-sub .ph-bold {
+  font-weight: 700; color: var(--ink);
+}
+
+/* soft closing line below the 3 cards - no button, just a sentence */
+.post-hero-outro {
+  text-align: center;
+  margin-top: 14px;
+  display: flex; flex-direction: column; gap: 1px;
+  opacity: .85;
+}
+.post-hero-outro .outro-q {
+  font-family: 'Rubik', sans-serif;
+  font-size: 13.5px; font-weight: 600; color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.post-hero-outro .outro-a {
+  font-size: 13px; color: var(--muted);
+  font-style: italic;
 }
 .reveal-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
@@ -442,45 +465,29 @@ body {
     <!-- ── LEFT: VISUAL - vertical stack of chaos cards, no circle ── -->
     <div class="visual">
       <div class="chaos-card cc-1 urgent">
-        <div class="cc-head">
-          <span class="cc-icon" style="background:#E84D4D;">📞</span>
-          <span class="cc-source">שיחות שלא נענו</span>
-          <span class="cc-time">היום</span>
-        </div>
-        <div class="cc-body">8 שיחות ממתינות לחזרה</div>
+        <span class="cc-icon" style="background:#E84D4D;">📞</span>
+        <span class="cc-body">8 שיחות שלא נענו</span>
       </div>
 
       <div class="chaos-card cc-2">
-        <div class="cc-head">
-          <span class="cc-icon" style="background:#25D366;">💬</span>
-          <span class="cc-source">וואטסאפ</span>
-          <span class="cc-time">עכשיו</span>
-        </div>
-        <div class="cc-body">"אפשר להזיז את הפגישה?"</div>
+        <span class="cc-icon" style="background:#25D366;">💬</span>
+        <span class="cc-body">14 הודעות חדשות</span>
       </div>
 
       <div class="chaos-card cc-3 sticky">
-        <div class="cc-head">
-          <span class="cc-icon" style="background:#E8A030;">📝</span>
-          <span class="cc-source">משימה</span>
-          <span class="cc-time">היום</span>
-        </div>
-        <div class="cc-body">לשלוח הצעת מחיר ללקוח</div>
+        <span class="cc-icon" style="background:#E8A030;">📝</span>
+        <span class="cc-body">לשלוח הצעת מחיר</span>
       </div>
 
       <div class="chaos-card cc-4">
-        <div class="cc-head">
-          <span class="cc-icon" style="background:#7A5AF0;">📨</span>
-          <span class="cc-source">ליד חדש</span>
-          <span class="cc-time">לפני 3 דק'</span>
-        </div>
-        <div class="cc-body">פנייה מאתר העסק</div>
+        <span class="cc-icon" style="background:#7A5AF0;">📅</span>
+        <span class="cc-body">אפשר להזיז את הפגישה למחר?</span>
       </div>
     </div>
 
     <!-- ── RIGHT: CENTERED TEXT ── -->
     <div class="content">
-      <div class="pill">⚡ אבחון אישי, חינמי</div>
+      <div class="pill">✨ אבחון עסקי חכם</div>
 
       <h1 class="main-msg">
         <span class="line">בלי בלאגן.</span>
@@ -488,10 +495,11 @@ body {
         <span class="line">בלי לעבוד מסביב לשעון.</span>
       </h1>
 
-      <div class="whisper">
-        <span class="line">לא בטוח שאת.ה צריכ.ה עוד מערכת.</span>
-        <span class="line">יכול להיות שאת.ה פשוט צריכ.ה <span class="bold">לדעת מאיפה להתחיל</span>.</span>
-      </div>
+      <div class="whisper">שקט. סדר. <span class="bold">פחות עומס.</span></div>
+
+      <p class="sub">
+        5 דקות שיגלו לך מאיפה הכי נכון להתחיל עם אוטומציה <span class="sub-bold">דווקא בעסק שלך</span>.
+      </p>
 
       <div class="cta-row">
         <button class="btn-primary" onclick="startDiagnosis()">
@@ -501,11 +509,11 @@ body {
       </div>
 
       <div class="trust-row">
-        <span class="item">3 דקות</span>
+        <span class="item">⏱️ 5 דקות</span>
         <span class="bullet">•</span>
-        <span class="item">מותאם לעסק שלך</span>
+        <span class="item">🎯 מותאם לעסק שלך</span>
         <span class="bullet">•</span>
-        <span class="item">ללא התחייבות</span>
+        <span class="item">🔒 ללא התחייבות</span>
       </div>
 
     </div>
@@ -514,34 +522,38 @@ body {
 </main>
 
 <section class="post-hero">
-  <div class="post-hero-eyebrow">3 שלבים · 3 דקות</div>
-  <h2 class="post-hero-title">אחרי 3 דקות, יהיה לך:</h2>
-  <p class="post-hero-sub">לא עוד מערכת חדשה. תמונת מצב אמיתית של איפה אוטומציה באמת תעזור - דווקא בעסק שלך.</p>
+  <h2 class="post-hero-title">מה תקבלו בסוף האבחון?</h2>
+  <p class="post-hero-sub">האתגר הוא בדרך כלל לא חוסר בכלים - האתגר הוא <span class="ph-bold">לדעת מאיפה להתחיל</span>.</p>
   <div class="reveal-grid">
     <div class="reveal-card">
       <span class="rev-num">01</span>
-      <div class="ri">🔍</div>
+      <div class="ri">⏱️</div>
       <div class="rev-content">
-        <h3>נגלה מה הכי מעכב אותך</h3>
-        <p>תמונת מצב מדויקת של נקודות החיכוך - לפי מה שקורה אצלך ביום-יום.</p>
+        <h3>איפה הזמן נשרף?</h3>
+        <p>נזהה אילו משימות ותהליכים גוזלים ממך הכי הרבה זמן ואנרגיה.</p>
       </div>
     </div>
     <div class="reveal-card">
       <span class="rev-num">02</span>
-      <div class="ri">⚡</div>
+      <div class="ri">🔧</div>
       <div class="rev-content">
-        <h3>נראה איפה אוטומציה יכולה לעזור</h3>
-        <p>לא כל בעיה דורשת מערכת. נסמן את המקומות שבהם זה באמת ייתן ROI.</p>
+        <h3>מה הכי דחוף לפתור?</h3>
+        <p>נגלה איפה צוואר הבקבוק שהכי משפיע על ההתנהלות היומיומית של העסק.</p>
       </div>
     </div>
     <div class="reveal-card">
       <span class="rev-num">03</span>
-      <div class="ri">🧭</div>
+      <div class="ri">⚡</div>
       <div class="rev-content">
-        <h3>תקבלי נקודת התחלה ברורה</h3>
-        <p>בלי טירוף של כלים. רק הצעד הראשון - מותאם בדיוק לעסק שלך.</p>
+        <h3>איפה אוטומציה תיתן את האימפקט הכי גבוה?</h3>
+        <p>תקבל.י המלצה ברורה על האוטומציה שכדאי להתחיל ממנה עכשיו.</p>
       </div>
     </div>
+  </div>
+
+  <div class="post-hero-outro">
+    <span class="outro-q">לא בטוחים מאיפה להתחיל?</span>
+    <span class="outro-a">בדיוק בשביל זה בנינו את האבחון.</span>
   </div>
 </section>
 
