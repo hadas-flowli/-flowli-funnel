@@ -48,8 +48,8 @@ body {
 .stage {
   flex: 1; position: relative; z-index: 5;
   width: 100%; max-width: 1240px; margin: 0 auto;
-  padding: 20px 28px 60px;
-  display: flex; align-items: flex-start;
+  padding: 12px 28px 24px;
+  display: flex; align-items: center;
   min-height: 280px;
 }
 .hero-grid {
@@ -478,9 +478,14 @@ body {
 
 /* ─── MOBILE: tighter spacing throughout ─── */
 @media (max-width: 640px) {
-  .top-nav { padding: 8px 16px 2px; }
-  .nav-badge { display: none; }
-  .stage { padding: 2px 14px 0; min-height: auto; }
+  .top-nav { padding: 10px 14px 6px; }
+  /* badge stays visible on mobile, top-left (LTR end in RTL flex) */
+  .nav-badge {
+    font-size: 10px;
+    padding: 5px 10px;
+    letter-spacing: .03em;
+  }
+  .stage { padding: 8px 14px 4px; min-height: auto; }
 
   /* HEADLINE: dominant */
   .main-msg {
