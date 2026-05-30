@@ -204,12 +204,15 @@ body {
 }
 
 /* ── CLICK ANIMATION: cards exit upward (reverse of entry) + transition overlay ── */
-/* longhand props so inline animation-delay can override per card (stagger) */
+/* All longhand props explicit to override the .cc-N shorthand entirely
+   — otherwise animation-delay leaks (cc-1 had 0.4s, cc-4 had 1.9s entry delays) */
 .chaos-card.exiting {
   animation-name: card-fall-out;
   animation-duration: 0.42s;
+  animation-delay: 0s;
   animation-timing-function: cubic-bezier(.55,0,.7,.5);
   animation-fill-mode: forwards;
+  animation-iteration-count: 1;
   pointer-events: none;
 }
 @keyframes card-fall-out {
@@ -680,17 +683,18 @@ function startDiagnosis() {
   const label = btn.querySelector('span:not(.arrow)');
   if (label) label.textContent = 'עושים סדר...';
 
-  /* 2. Cards EXIT upward — reverse of entry, ONE BY ONE (cc-4 first, cc-1 last) */
-  const cards = document.querySelectorAll('.chaos-card');
-  const total = cards.length;
-  const STAGGER = 160;  /* ms between each card exit start */
-  cards.forEach((card, i) => {
-    if (card.getBoundingClientRect().width === 0) return;  /* skip hidden (mobile) */
-    /* reverse order: last card in DOM (cc-4) exits first */
-    card.style.animationDelay = ((total - 1 - i) * STAGGER) + 'ms';
-    card.classList.add('exiting');
+  /* 2. Cards EXIT upward — reverse of entry, ONE BY ONE via setTimeout
+        (more reliable than animation-delay because the existing shorthand
+        on .cc-N can leak delay values into the override) */
+  const cards = Array.from(document.querySelectorAll('.chaos-card'));
+  const visibleCards = cards.filter(c => c.getBoundingClientRect().width > 0);
+  const STAGGER = 220;  /* ms between each card */
+  visibleCards.reverse().forEach((card, i) => {
+    /* reversed: cc-4 (was last in DOM) exits FIRST at i=0, cc-1 exits LAST */
+    setTimeout(() => card.classList.add('exiting'), i * STAGGER);
   });
-  /* last card starts exiting at: (4-1) * 160 = 480ms, finishes at 480 + 420 = 900ms */
+  /* last card starts at: (n-1) * 220ms; with 4 cards that's 660ms,
+     animation 420ms → last finishes at ~1080ms */
 
   /* 3. Transition overlay appears right after all cards are gone */
   setTimeout(() => {
@@ -704,7 +708,7 @@ function startDiagnosis() {
     document.body.appendChild(overlay);
     void overlay.offsetWidth;
     setTimeout(() => overlay.classList.add('visible'), 20);
-  }, 950);
+  }, 1150);
 
   /* 4. Fade out the overlay text before navigation - smooth handoff */
   setTimeout(() => {
@@ -714,12 +718,12 @@ function startDiagnosis() {
       text.style.opacity = '0';
       text.style.transform = 'translateY(-6px)';
     }
-  }, 2100);
+  }, 2300);
 
   /* 5. Navigate to first question (overlay cream bg = step1 cream bg = no flash) */
   setTimeout(() => {
     window.location.href = 'flowli-diagnose-step1.html';
-  }, 2400);
+  }, 2600);
 }
 </script>
 <script src="flowli-legal.js"></script>
