@@ -158,7 +158,7 @@ body {
   top: 50%;
   transform: translateY(-50%);
   width: 220px;
-  height: 250px;
+  height: 300px;
   z-index: 3;
 }
 
@@ -191,11 +191,11 @@ body {
 }
 .sticky .cc-body { font-style: italic; }
 
-/* Vertical pile - 2-row notification cards, tighter overlap */
+/* Vertical pile - 2-row notification cards, light overlap so body line is visible */
 .cc-1 { top:   0px; --x: -16px; --rot: -5deg; z-index: 1; }
-.cc-2 { top:  56px; --x:  14px; --rot:  6deg; z-index: 2; }
-.cc-3 { top: 112px; --x: -10px; --rot: -3deg; z-index: 3; }
-.cc-4 { top: 168px; --x:  14px; --rot:  4deg; z-index: 4; }
+.cc-2 { top:  72px; --x:  14px; --rot:  6deg; z-index: 2; }
+.cc-3 { top: 144px; --x: -10px; --rot: -3deg; z-index: 3; }
+.cc-4 { top: 216px; --x:  14px; --rot:  4deg; z-index: 4; }
 
 @keyframes card-fall {
   0%   { opacity: 0; transform: translateX(-50%) translateX(var(--x)) translateY(-40px) rotate(var(--rot)) scale(.92); }
@@ -542,8 +542,6 @@ body {
 
     <!-- ── RIGHT: CENTERED TEXT ── -->
     <div class="content">
-      <div class="pill">✨ אבחון עסקי חכם</div>
-
       <h1 class="main-msg">
         <span class="line">בלי בלאגן.</span>
         <span class="line">בלי <span class="emphasis">פניות שנשכחות</span>.</span>
@@ -553,7 +551,7 @@ body {
       <div class="whisper">שקט. סדר. <span class="bold">פחות עומס.</span></div>
 
       <p class="sub">
-        5 דקות שיגלו לך איפה אוטומציה יכולה לעשות <span class="sub-bold">את ההבדל הכי גדול</span> בעסק שלך.
+        5 דקות שיגלו לך מאיפה הכי נכון להתחיל עם אוטומציה - <span class="sub-bold">דווקא בעסק שלך</span>.
       </p>
 
       <div class="cta-row">
